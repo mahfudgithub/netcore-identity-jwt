@@ -1,0 +1,8 @@
+## POST
+{
+    "FirstName": "Umar1",
+    "LastName": "bin Khattab1",
+    "Email": "umar@ra1.com",
+    "Password":"Umar@123",
+    "ConfirmPassword":"Umar@123"
+}
