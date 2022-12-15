@@ -1,8 +1,15 @@
-## POST
+## POST Register
 {
     "FirstName": "Umar1",
     "LastName": "bin Khattab1",
     "Email": "umar@ra1.com",
     "Password":"Umar@123",
     "ConfirmPassword":"Umar@123"
+}
+
+{
+    "FirstName": "Myria",
+    "Email": "myria@gmail.com",
+    "Password":"Myria@1234",
+    "ConfirmPassword":"Myria@1234"
 }

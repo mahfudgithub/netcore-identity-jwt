@@ -1,4 +1,5 @@
 ﻿using hidayah_collage.Models;
+using hidayah_collage.Models.MessageResponse;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -12,6 +13,13 @@ namespace hidayah_collage.DataContext
     {
         public AppDbContext(DbContextOptions options) : base(options)
         {
+        }
+
+        public DbSet<Message> Message { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
         }
     }
 }

@@ -1,6 +1,7 @@
 using hidayah_collage.DataContext;
 using hidayah_collage.Interface;
 using hidayah_collage.Models;
+using hidayah_collage.Models.Email;
 using hidayah_collage.Repository;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
@@ -66,9 +67,12 @@ namespace hidayah_collage
                     };
                 });
 
-            services.AddControllers();
+            services.Configure<EmailConfig>(Configuration.GetSection("EmailConfiguration"));
+            services.AddScoped<IAccount, AccountRepository>();
+            services.AddTransient<IMailService, MailServiceRepository>();
 
-            services.AddTransient<IAccount, AccountRepository>();
+            services.AddControllers();
+            services.AddRazorPages();            
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -81,6 +85,8 @@ namespace hidayah_collage
 
             app.UseHttpsRedirection();
 
+            app.UseStaticFiles();
+
             app.UseRouting();
 
             app.UseAuthorization();
@@ -91,6 +97,7 @@ namespace hidayah_collage
 
             app.UseEndpoints(endpoints =>
             {
+                endpoints.MapRazorPages();
                 endpoints.MapControllers();
             });
         }
