@@ -6,6 +6,7 @@ using hidayah_collage.Repository;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -48,6 +49,11 @@ namespace hidayah_collage
                 .AddEntityFrameworkStores<AppDbContext>()
                 .AddDefaultTokenProviders();
 
+            //services.AddSession(options =>
+            //{
+            //    options.IdleTimeout = TimeSpan.FromMinutes(60);
+            //});
+
             services.AddAuthentication(option =>
             {
                 option.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -55,6 +61,8 @@ namespace hidayah_collage
             })
                 .AddJwtBearer(option =>
                 {
+                    //option.SaveToken = true;
+                    //option.RequireHttpsMetadata = false;
                     option.TokenValidationParameters = new TokenValidationParameters()
                     {
                         ValidateIssuer = true,
@@ -70,6 +78,14 @@ namespace hidayah_collage
             services.Configure<EmailConfig>(Configuration.GetSection("EmailConfiguration"));
             services.AddScoped<IAccount, AccountRepository>();
             services.AddTransient<IMailService, MailServiceRepository>();
+
+            //services.AddCors(option =>
+            //{
+            //    option.AddDefaultPolicy(builder =>
+            //    {
+            //        builder.AllowAnyOrigin().AllowAnyOrigin().AllowAnyMethod();
+            //    });
+            //});
 
             services.AddControllers();
             services.AddRazorPages();            
@@ -89,11 +105,25 @@ namespace hidayah_collage
 
             app.UseRouting();
 
-            app.UseAuthorization();
+            // JWT
+            //app.UseCookiePolicy();
+            //app.UseSession();
+
+            //app.Use(async (context, next) =>
+            //{
+            //    var JWToken = context.Session.GetString("JWToken");
+            //    if (!string.IsNullOrEmpty(JWToken))
+            //    {
+            //        context.Request.Headers.Add("Authorization", "Bearer " + JWToken);
+            //    }
+            //    await next();
+            //});
+            //
 
             app.UseAuthentication();
+            app.UseAuthorization();
 
-            app.UseCors();
+            //app.UseCors();
 
             app.UseEndpoints(endpoints =>
             {

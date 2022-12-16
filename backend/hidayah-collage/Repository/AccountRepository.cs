@@ -69,18 +69,21 @@ namespace hidayah_collage.Repository
 
             var authClaims = new List<Claim>
             {
-                new Claim(ClaimTypes.Name, loginRequest.Email),
-                new Claim(JwtRegisteredClaimNames.Jti,Guid.NewGuid().ToString())
+                //new Claim("id", emailAccount.Result.Id),
+                new Claim("Email", emailAccount.Result.Email),
+                new Claim(ClaimTypes.NameIdentifier, emailAccount.Result.Id)
+                //new Claim(ClaimTypes.Name, loginRequest.Email),
+                //new Claim(JwtRegisteredClaimNames.Jti,Guid.NewGuid().ToString())
             };
 
-            var authSignInKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(_configuration["JWT:Secret"]));
+            var authSignInKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWT:Secret"]));
 
             var token = new JwtSecurityToken(
                 issuer: _configuration["JWT:ValidIssuer"],
                 audience: _configuration["JWT:ValidAudience"],
                 expires: DateTime.Now.AddDays(1),
                 claims: authClaims,
-                signingCredentials: new SigningCredentials(authSignInKey, SecurityAlgorithms.HmacSha256Signature)
+                signingCredentials: new SigningCredentials(authSignInKey, SecurityAlgorithms.HmacSha256)
                 );
 
             string tokenAsSting = new JwtSecurityTokenHandler().WriteToken(token);
@@ -284,7 +287,7 @@ namespace hidayah_collage.Repository
                 var normalToken = Encoding.UTF8.GetString(decodedToken);
 
                 var result = await _userManager.ResetPasswordAsync(user, normalToken, resetPasswordRequest.NewPassword);
-
+               
                 if (result.Succeeded)
                 {
                     response.Email = user.Email;

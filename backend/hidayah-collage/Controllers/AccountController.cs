@@ -145,7 +145,22 @@ namespace hidayah_collage.Controllers
 
             return BadRequest(result);
 
+        }
 
+        [HttpPost]
+        public IActionResult Logout()
+        {
+            Response.Headers.Remove("Authorization");
+            Response.Cookies.Delete("");
+            HttpContext.Session.Clear();
+            return Redirect($"{_configuration["AppUrl"]}/confirmemail.html");
+        }
+
+        public IActionResult BadRequestResult()
+        {
+            IEnumerable<string> errMsg = ModelState.Values.SelectMany(x => x.Errors.Select(e => e.ErrorMessage));
+
+            return BadRequest(errMsg);
         }
     }
 }
