@@ -147,13 +147,14 @@ namespace hidayah_collage.Controllers
 
         }
 
-        [HttpPost]
+        [HttpPost("Logout")]
         public IActionResult Logout()
         {
             Response.Headers.Remove("Authorization");
             Response.Cookies.Delete("");
             HttpContext.Session.Clear();
-            return Redirect($"{_configuration["AppUrl"]}/confirmemail.html");
+            return NoContent();
+            //return Redirect($"{_configuration["AppUrl"]}/confirmemail.html");
         }
 
         public IActionResult BadRequestResult()

@@ -49,10 +49,10 @@ namespace hidayah_collage
                 .AddEntityFrameworkStores<AppDbContext>()
                 .AddDefaultTokenProviders();
 
-            //services.AddSession(options =>
-            //{
-            //    options.IdleTimeout = TimeSpan.FromMinutes(60);
-            //});
+            services.AddSession(options =>
+            {
+                options.IdleTimeout = TimeSpan.FromMinutes(60);
+            });
 
             services.AddAuthentication(option =>
             {
@@ -79,13 +79,13 @@ namespace hidayah_collage
             services.AddScoped<IAccount, AccountRepository>();
             services.AddTransient<IMailService, MailServiceRepository>();
 
-            //services.AddCors(option =>
-            //{
-            //    option.AddDefaultPolicy(builder =>
-            //    {
-            //        builder.AllowAnyOrigin().AllowAnyOrigin().AllowAnyMethod();
-            //    });
-            //});
+            services.AddCors(option =>
+            {
+                option.AddDefaultPolicy(builder =>
+                {
+                    builder.AllowAnyOrigin().AllowAnyOrigin().AllowAnyMethod();
+                });
+            });
 
             services.AddControllers();
             services.AddRazorPages();            
@@ -106,8 +106,8 @@ namespace hidayah_collage
             app.UseRouting();
 
             // JWT
-            //app.UseCookiePolicy();
-            //app.UseSession();
+            app.UseCookiePolicy();
+            app.UseSession();
 
             //app.Use(async (context, next) =>
             //{
@@ -123,7 +123,7 @@ namespace hidayah_collage
             app.UseAuthentication();
             app.UseAuthorization();
 
-            //app.UseCors();
+            app.UseCors();
 
             app.UseEndpoints(endpoints =>
             {
