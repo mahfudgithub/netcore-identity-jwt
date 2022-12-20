@@ -97,6 +97,7 @@ namespace hidayah_collage
             services.AddScoped<RefreshTokenValidator>();            
             services.AddScoped<TokenGenerator>();
             services.AddTransient<IRefreshToken, RefreshTokenRepository>();
+            services.AddTransient<IMessage, MessageRepository>();
             services.AddTransient<IMailService, MailServiceRepository>();
 
             services.AddCors(option =>
