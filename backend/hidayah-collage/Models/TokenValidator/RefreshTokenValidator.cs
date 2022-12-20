@@ -22,7 +22,7 @@ namespace hidayah_collage.Models.TokenValidator
         {
             TokenValidationParameters validationParameters = new TokenValidationParameters()
             {
-                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWT:Secret"])),
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWT:Refresh"])),
                 ValidIssuer = _configuration["JWT:ValidIssuer"],
                 ValidAudience = _configuration["JWT:ValidAudience"],
                 ValidateIssuerSigningKey = true,
