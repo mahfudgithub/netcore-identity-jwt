@@ -13,7 +13,8 @@ namespace hidayah_collage.Interface
         Task<WebResponse> ConfirmEmailAsync(string userId, string token);
         Task<WebResponse> Login(LoginRequest loginRequest);
         Task<WebResponse> ForgotPassword(ForgotPasswordRequest forgotPasswordRequest);
-        Task SendEmailAsync(EmailRequest emailRequest);
         Task<WebResponse> ResetPassword(ResetPasswordRequest resetPasswordRequest);
+        Task<WebResponse> RefreshToken(RefreshTokenRequest refreshTokenRequest);
+        Task<WebResponse> Logout(string rawUserId);
     }
 }

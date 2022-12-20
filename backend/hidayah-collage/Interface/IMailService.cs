@@ -10,5 +10,6 @@ namespace hidayah_collage.Interface
     public interface IMailService
     {
         Task<HttpStatusCode> SendEmailAsync(EmailRequest emailRequest);
+        Task SendEmailSMTPAsync(EmailRequest emailRequest);
     }
 }

@@ -7,6 +7,7 @@ using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace hidayah_collage.Controllers
@@ -58,8 +59,10 @@ namespace hidayah_collage.Controllers
                 try
                 {
                     var result = await _account.Login(loginRequest);
+                    string token = (string)result.data.GetType().GetProperty("RefreshToken").GetValue(result.data);
                     if (result.status)
                     {
+                        Response.Cookies.Append("X-Access-Token", token, new CookieOptions() { HttpOnly = true, SameSite = SameSiteMode.Strict,MaxAge= TimeSpan.FromDays(2)});
                         return Ok(result);
                     }
                     else
@@ -147,13 +150,57 @@ namespace hidayah_collage.Controllers
 
         }
 
-        [HttpPost("Logout")]
-        public IActionResult Logout()
+        [HttpPost("refresh")]
+        public async Task<IActionResult> Refresh([FromBody] RefreshTokenRequest refreshTokenRequest)
         {
-            Response.Headers.Remove("Authorization");
-            Response.Cookies.Delete("");
-            HttpContext.Session.Clear();
-            return NoContent();
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    var result = await _account.RefreshToken(refreshTokenRequest);
+                    if (result.status)
+                    {
+                        return Ok(result);
+                    }
+                    else
+                    {
+                        return BadRequest(result);
+                    }
+                }
+                catch (Exception)
+                {
+                    return StatusCode(500);
+                }
+            }
+            return BadRequest("Some Properties are not valid ");
+        }
+
+        [Authorize]
+        [HttpDelete("logout")]
+        public async Task<IActionResult> Logout()
+        {
+            string rawUserId = HttpContext.User.FindFirstValue("id");
+            try
+            {
+                var result = await _account.Logout(rawUserId);
+                if (result.status)
+                {                    
+                    Response.Cookies.Delete("X-Access-Token");
+                    return NoContent();
+                }
+                else
+                {
+                    return BadRequest(result);
+                }
+            }
+            catch (Exception)
+            {
+                return StatusCode(500);
+            }
+
+            //Response.Headers.Remove("Authorization");
+           // HttpContext.Session.Clear();
+            
             //return Redirect($"{_configuration["AppUrl"]}/confirmemail.html");
         }
 

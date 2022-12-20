@@ -22,5 +22,6 @@ namespace hidayah_collage
                 {
                     webBuilder.UseStartup<Startup>();
                 });
+        
     }
 }

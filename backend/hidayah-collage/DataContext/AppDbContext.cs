@@ -1,5 +1,6 @@
 ﻿using hidayah_collage.Models;
 using hidayah_collage.Models.MessageResponse;
+using hidayah_collage.Models.SystemMaster;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -13,9 +14,14 @@ namespace hidayah_collage.DataContext
     {
         public AppDbContext(DbContextOptions options) : base(options)
         {
+            ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
+            this.ChangeTracker.LazyLoadingEnabled = false;
         }
 
         public DbSet<Message> Message { get; set; }
+        public DbSet<SystemMaster> System { get; set; }
+        public DbSet<RefreshToken> RefreshTokens { get; set; }
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

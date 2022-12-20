@@ -2,6 +2,8 @@ using hidayah_collage.DataContext;
 using hidayah_collage.Interface;
 using hidayah_collage.Models;
 using hidayah_collage.Models.Email;
+using hidayah_collage.Models.TokenGenerator;
+using hidayah_collage.Models.TokenValidator;
 using hidayah_collage.Repository;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
@@ -54,29 +56,47 @@ namespace hidayah_collage
                 options.IdleTimeout = TimeSpan.FromMinutes(60);
             });
 
+            services.AddAuthorization();
             services.AddAuthentication(option =>
             {
                 option.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
                 option.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                option.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
             })
                 .AddJwtBearer(option =>
                 {
-                    //option.SaveToken = true;
-                    //option.RequireHttpsMetadata = false;
+                    option.SaveToken = true;
+                    option.RequireHttpsMetadata = false;
                     option.TokenValidationParameters = new TokenValidationParameters()
                     {
                         ValidateIssuer = true,
                         ValidateAudience = true,
-                        RequireExpirationTime=true,
+                        RequireExpirationTime = true,
+                        ValidateLifetime = true,
+                        ClockSkew = TimeSpan.Zero,
                         ValidAudience = Configuration["JWT:ValidAudience"],
                         ValidIssuer = Configuration["JWT:ValidIssuer"],
                         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["JWT:Secret"])),
-                        ValidateIssuerSigningKey=true
+                        ValidateIssuerSigningKey = true
                     };
+                    //option.Events = new JwtBearerEvents
+                    //{
+                    //    OnMessageReceived = context =>
+                    //    {
+                    //        context.Token = context.Request.Cookies["X-Access-Token"];
+                    //        return Task.CompletedTask;
+                    //    }
+                    //};
                 });
 
             services.Configure<EmailConfig>(Configuration.GetSection("EmailConfiguration"));
             services.AddScoped<IAccount, AccountRepository>();
+            services.AddScoped<GetMessageRepository>();
+            services.AddScoped<AccessTokenGenerator>();
+            services.AddScoped<RefreshTokenGenerator>();
+            services.AddScoped<RefreshTokenValidator>();            
+            services.AddScoped<TokenGenerator>();
+            services.AddTransient<IRefreshToken, RefreshTokenRepository>();
             services.AddTransient<IMailService, MailServiceRepository>();
 
             services.AddCors(option =>

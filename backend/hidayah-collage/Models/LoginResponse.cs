@@ -11,6 +11,7 @@ namespace hidayah_collage.Models
         public string LastName { get; set; }
         public string Username { get; set; }
         public string Token { get; set; }
+        public string RefreshToken { get; set; }
         public DateTime? ExpireDate { get; set; }
     }
 }
