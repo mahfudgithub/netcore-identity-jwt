@@ -58,10 +58,10 @@ namespace hidayah_collage.Controllers
             {
                 try
                 {
-                    var result = await _account.Login(loginRequest);
-                    string token = (string)result.data.GetType().GetProperty("RefreshToken").GetValue(result.data);
+                    var result = await _account.Login(loginRequest);                    
                     if (result.status)
                     {
+                        string token = (string)result.data.GetType().GetProperty("RefreshToken").GetValue(result.data);
                         Response.Cookies.Append("X-Access-Token", token, new CookieOptions() { HttpOnly = true, SameSite = SameSiteMode.Strict,MaxAge= TimeSpan.FromDays(2)});
                         return Ok(result);
                     }

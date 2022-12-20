@@ -8,6 +8,8 @@ namespace hidayah_collage.Models
 {
     public class RegisterRequest
     {
+        [Required, StringLength(30)]
+        public string UserName { get; set; }
         [Required]
         public string FirstName { get; set; }
         public string LastName { get; set; }

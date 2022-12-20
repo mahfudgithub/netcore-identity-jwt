@@ -11,6 +11,7 @@ using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
@@ -22,6 +23,7 @@ namespace hidayah_collage.Repository
     public class AccountRepository : IAccount
     {
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly IConfiguration _configuration;
         private readonly IMailService _mailService;
         private readonly GetMessageRepository _getMessageRepository;
@@ -31,6 +33,7 @@ namespace hidayah_collage.Repository
         private readonly RefreshTokenValidator _refreshTokenValidator;
 
         public AccountRepository(UserManager<ApplicationUser> userManager
+            ,SignInManager<ApplicationUser> signInManager
             ,IConfiguration configuration
             ,IMailService mailService
             ,GetMessageRepository getMessageRepository
@@ -41,6 +44,7 @@ namespace hidayah_collage.Repository
             )
         {
             _userManager = userManager;
+            _signInManager = signInManager;
             _configuration = configuration;
             _mailService = mailService;
             _getMessageRepository = getMessageRepository;
@@ -54,19 +58,59 @@ namespace hidayah_collage.Repository
         {
             WebResponse webResponse = new WebResponse();
             var response = new LoginResponse();
+            ApplicationUser applicationUser = new ApplicationUser();
+            //var email = new EmailAddressAttribute();
 
-            var emailAccount = ValidateEmail(loginRequest.Email);
-            if (emailAccount.Result == null)
+            var userName = loginRequest.Email;
+            if (userName.IndexOf('@') > -1)
             {
-                webResponse.status = false;
-                webResponse.message = _getMessageRepository.GetMeessageText("ERR002");
-                webResponse.data = null;
-                return webResponse;
+                applicationUser = await ValidateEmail(loginRequest.Email);
+                if (applicationUser == null)
+                {
+                    webResponse.status = false;
+                    webResponse.message = _getMessageRepository.GetMeessageText("ERR002");
+                    webResponse.data = null;
+                    return webResponse;
+                }
+            }
+            else
+            {
+                applicationUser = await ValidateUserName(loginRequest.Email);
+                if (applicationUser == null)
+                {
+                    webResponse.status = false;
+                    webResponse.message = _getMessageRepository.GetMeessageText("ERR002");
+                    webResponse.data = null;
+                    return webResponse;
+                }
             }
 
-            var result = await _userManager.CheckPasswordAsync(emailAccount.Result, loginRequest.Password);
+            //if (email.IsValid(loginRequest.Email))
+            //{
+            //    applicationUser = await ValidateEmail(loginRequest.Email);
+            //    if (applicationUser == null)
+            //    {
+            //        webResponse.status = false;
+            //        webResponse.message = _getMessageRepository.GetMeessageText("ERR002");
+            //        webResponse.data = null;
+            //        return webResponse;
+            //    }
+            //}
+            //else
+            //{
+            //    applicationUser = await ValidateUserName(loginRequest.Email);
+            //    if (applicationUser == null)
+            //    {
+            //        webResponse.status = false;
+            //        webResponse.message = _getMessageRepository.GetMeessageText("ERR002");
+            //        webResponse.data = null;
+            //        return webResponse;
+            //    }
+            //}
 
-            if (!result)
+            var result = await _signInManager.PasswordSignInAsync(applicationUser.UserName, loginRequest.Password,false,false);
+
+            if (!result.Succeeded)
             {
                 webResponse.status = false;
                 webResponse.message = _getMessageRepository.GetMeessageText("ERR003");
@@ -74,19 +118,19 @@ namespace hidayah_collage.Repository
                 return webResponse;
             }
 
-            var generateToken = _accessTokenGenerator.GenerateToken(emailAccount.Result);
+            var generateToken = _accessTokenGenerator.GenerateToken(applicationUser);
             var refreshToken = _refreshTokenGenerator.GenerateToken();
 
             RefreshToken refreshTokenDTO = new RefreshToken()
             {
                 Token = refreshToken,
-                UserId = emailAccount.Result.Id
+                UserId = applicationUser.Id
             };
             await _refreshToken.Create(refreshTokenDTO);
 
-            response.FirstName = emailAccount.Result.FirstName;
-            response.LastName = emailAccount.Result.LastName;
-            response.Username = emailAccount.Result.Email;
+            response.FirstName = applicationUser.FirstName;
+            response.LastName = applicationUser.LastName;
+            response.Username = applicationUser.Email;
             response.Token = generateToken.Token;
             response.ExpireDate = generateToken.ExpireDate;
             response.RefreshToken = refreshToken;
@@ -142,7 +186,7 @@ namespace hidayah_collage.Repository
                 FirstName = registerRequest.FirstName,
                 LastName = registerRequest.LastName,
                 Email = registerRequest.Email,
-                UserName = registerRequest.Email
+                UserName = registerRequest.UserName
             };
 
             if(registerRequest.Password != registerRequest.ConfirmPassword)
@@ -155,6 +199,16 @@ namespace hidayah_collage.Repository
 
             var emailAccount = ValidateEmail(registerRequest.Email);
             if (emailAccount.Result != null)
+            {
+                var messageTxt = _getMessageRepository.GetMeessageText("ERR001");
+                webResponse.status = false;
+                webResponse.message = messageTxt;
+                webResponse.data = null;
+                return webResponse;
+            }
+
+            var usernameAccount = ValidateUserName(registerRequest.UserName);
+            if (usernameAccount.Result != null)
             {
                 var messageTxt = _getMessageRepository.GetMeessageText("ERR001");
                 webResponse.status = false;
@@ -203,6 +257,13 @@ namespace hidayah_collage.Repository
         public async Task<ApplicationUser> ValidateEmail(string email)
         {
             var user = await _userManager.FindByEmailAsync(email);
+
+            return user;
+        }
+
+        public async Task<ApplicationUser> ValidateUserName(string username)
+        {
+            var user = await _userManager.FindByNameAsync(username);
 
             return user;
         }
