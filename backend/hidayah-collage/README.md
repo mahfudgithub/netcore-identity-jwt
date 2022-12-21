@@ -5,6 +5,7 @@ This API building with C# languange , framework .net core, and package from nuge
 ## Feature
 - Register
 	- User can be register with `API Spec`
+	
 	Request :
 	- Method : POST
 	- Endpoint : `/api/account/register`
@@ -35,6 +36,7 @@ This API building with C# languange , framework .net core, and package from nuge
 		 }
 	}
 	```
+- Login (Sign In)
 	
 
 # API Spec
