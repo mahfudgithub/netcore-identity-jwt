@@ -1,5 +1,6 @@
 ﻿using hidayah_collage.Interface;
 using hidayah_collage.Models.MessageResponse;
+using hidayah_collage.Models.Paging;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -75,13 +76,14 @@ namespace hidayah_collage.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetListMessage()
+        public async Task<IActionResult> GetListMessage([FromQuery] int size =5 , int page=1)
         {
             if (ModelState.IsValid)
             {
                 try
                 {
-                    var result = await _message.GetListMessageAsync();
+                    var paging = new PagingRequest { Size = size, Page = page };
+                    var result = await _message.GetListMessageAsync(paging);
                     if (result.status)
                     {
                         return Ok(result);

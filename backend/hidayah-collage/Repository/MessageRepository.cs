@@ -2,11 +2,13 @@
 using hidayah_collage.Interface;
 using hidayah_collage.Models;
 using hidayah_collage.Models.MessageResponse;
+using hidayah_collage.Models.Paging;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Sakura.AspNetCore;
 
 namespace hidayah_collage.Repository
 {
@@ -99,13 +101,13 @@ namespace hidayah_collage.Repository
 
                 webResponse.status = true;
                 webResponse.message = "Success Insert Data ";
-                webResponse.data = result;
+                webResponse.data = data;
             }
 
             return webResponse;
         }
 
-        public async Task<WebResponse> GetListMessageAsync()
+        public async Task<WebResponse> GetListMessageAsync(PagingRequest pagingRequest)
         {
             WebResponse webResponse = new WebResponse();
 
@@ -121,7 +123,7 @@ namespace hidayah_collage.Repository
                     webResponse.message = _getMessageRepository.GetMeessageText("SUC006");
                 }
                 webResponse.status = true;
-                webResponse.data = result;
+                webResponse.data = result.ToPagedList(pagingRequest.Size,pagingRequest.Page);
             }
             catch (Exception e)
             {
@@ -166,7 +168,7 @@ namespace hidayah_collage.Repository
             var result = await _appDbContext.SaveChangesAsync();
             webResponse.status = true;
             webResponse.message = "Success Update Data ";
-            webResponse.data = result;
+            webResponse.data = data;
 
             return webResponse;
         }
@@ -193,7 +195,7 @@ namespace hidayah_collage.Repository
 
                 webResponse.status = true;
                 webResponse.message = "Success Delete Data";
-                webResponse.data = result;
+                webResponse.data = null;
             }
 
             return webResponse;
