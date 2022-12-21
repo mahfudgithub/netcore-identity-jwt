@@ -205,7 +205,7 @@ Request :
 ```json 
 {
     "MSG_CD" : "string, unique",
-    "MSG_TEXT" : "string",
+    "MSG_TEXT" : "string"
 }
 ```
 
@@ -217,7 +217,7 @@ Response :
     "message" : "string",
     "data" : {
          "MSG_CD" : "string",
-		 "MSG_TEXT" : "string",
+		 "MSG_TEXT" : "string"
      }
 }
 ```
@@ -238,7 +238,7 @@ Response :
     "message" : "string",
     "data" : {
          "MSG_CD" : "string",
-		 "MSG_TEXT" : "string",
+		 "MSG_TEXT" : "string"
      }
 }
 ```
@@ -267,7 +267,7 @@ Response :
     "message" : "string",
     "data" : {
          "MSG_CD" : "string",
-		 "MSG_TEXT" : "string",
+		 "MSG_TEXT" : "string"
      }
 }
 ```
@@ -292,11 +292,11 @@ Response :
     "data" : [
         {
              "MSG_CD" : "string",
-			 "MSG_TEXT" : "string"
+			"MSG_TEXT" : "string"
         },
         {
              "MSG_CD" : "string",
-			 "MSG_TEXT" : "string"
+			"MSG_TEXT" : "string"
         },
 		{
              "MSG_CD" : "string",
