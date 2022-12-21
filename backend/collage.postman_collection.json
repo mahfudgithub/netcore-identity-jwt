@@ -1,0 +1,421 @@
+{
+	"info": {
+		"_postman_id": "41cab1fa-55e4-4fa6-b180-349f6a86446d",
+		"name": "collage",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "3866916"
+	},
+	"item": [
+		{
+			"name": "Message",
+			"item": [
+				{
+					"name": "GetMessageById",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImQ0YmJjZDJlLWM0ZDAtNGM5Zi1hZTJjLWYzYTc0Y2Y0YjBjZiIsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL2VtYWlsYWRkcmVzcyI6ImFiZHVsbGxhaDEyM0BnbWFpbC5jb20iLCJleHAiOjE2NzE2MDg3MTQsImlzcyI6Imh0dHA6Ly9sb2NhbGhvc3Q6MTY3OTgiLCJhdWQiOiJVc2VyQ29sbGFnZSJ9.SFg8Ou24fb_iTD_tZZpgfTe-vxWnziwfgEqsuAB1r9g",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:16798/api/Message/ERR008",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "16798",
+							"path": [
+								"api",
+								"Message",
+								"ERR008"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetListMessage",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImQ0YmJjZDJlLWM0ZDAtNGM5Zi1hZTJjLWYzYTc0Y2Y0YjBjZiIsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL2VtYWlsYWRkcmVzcyI6ImFiZHVsbGxhaDEyM0BnbWFpbC5jb20iLCJleHAiOjE2NzE2MDg5MzgsImlzcyI6Imh0dHA6Ly9sb2NhbGhvc3Q6MTY3OTgiLCJhdWQiOiJVc2VyQ29sbGFnZSJ9.XAH1f6Qpdq2WpPc0KdtympYMtgvbItfGjj-Li3YHtf4",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:16798/api/Message?size=10&page=1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "16798",
+							"path": [
+								"api",
+								"Message"
+							],
+							"query": [
+								{
+									"key": "size",
+									"value": "10"
+								},
+								{
+									"key": "page",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Message",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImQ0YmJjZDJlLWM0ZDAtNGM5Zi1hZTJjLWYzYTc0Y2Y0YjBjZiIsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL2VtYWlsYWRkcmVzcyI6ImFiZHVsbGxhaDEyM0BnbWFpbC5jb20iLCJleHAiOjE2NzE2MDkyMTgsImlzcyI6Imh0dHA6Ly9sb2NhbGhvc3Q6MTY3OTgiLCJhdWQiOiJVc2VyQ29sbGFnZSJ9.cn444LKw6AIcfpIgUFdihW2z07VhBsxTz8zm2qI9YL8",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"MsgCode\":\"ERR008\",\r\n    \"MsgText\":\"No Data Found\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:16798/api/Message",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "16798",
+							"path": [
+								"api",
+								"Message"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "UpdateMessage",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImQ0YmJjZDJlLWM0ZDAtNGM5Zi1hZTJjLWYzYTc0Y2Y0YjBjZiIsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL2VtYWlsYWRkcmVzcyI6ImFiZHVsbGxhaDEyM0BnbWFpbC5jb20iLCJleHAiOjE2NzE2MDg5MzgsImlzcyI6Imh0dHA6Ly9sb2NhbGhvc3Q6MTY3OTgiLCJhdWQiOiJVc2VyQ29sbGFnZSJ9.XAH1f6Qpdq2WpPc0KdtympYMtgvbItfGjj-Li3YHtf4",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"MsgText\":\"No Data Found\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:16798/api/Message/ERR008",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "16798",
+							"path": [
+								"api",
+								"Message",
+								"ERR008"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DeleteMessage",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImQ0YmJjZDJlLWM0ZDAtNGM5Zi1hZTJjLWYzYTc0Y2Y0YjBjZiIsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL2VtYWlsYWRkcmVzcyI6ImFiZHVsbGxhaDEyM0BnbWFpbC5jb20iLCJleHAiOjE2NzE2MDkyMTgsImlzcyI6Imh0dHA6Ly9sb2NhbGhvc3Q6MTY3OTgiLCJhdWQiOiJVc2VyQ29sbGFnZSJ9.cn444LKw6AIcfpIgUFdihW2z07VhBsxTz8zm2qI9YL8",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:16798/api/Message/ERR008",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "16798",
+							"path": [
+								"api",
+								"Message",
+								"ERR008"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Register",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"FirstName\": \"Abdullah\",\r\n    \"LastName\":\"bin Umar\",\r\n    \"UserName\":\"abdul.umar\",\r\n    \"Email\": \"abdulllah123@gmail.com\",\r\n    \"Password\":\"Mahfud@123\",\r\n    \"ConfirmPassword\":\"Mahfud@123\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:16798/api/Account/Register",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "16798",
+					"path": [
+						"api",
+						"Account",
+						"Register"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Login",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"Email\": \"abdul.umar\",\r\n    \"Password\":\"Mahfud@123\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:16798/api/Account/Login",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "16798",
+					"path": [
+						"api",
+						"Account",
+						"Login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Forgot",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"Email\":\"Hamzah123456@gmail.com\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:16798/api/Account/ForgotPassword",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "16798",
+					"path": [
+						"api",
+						"Account",
+						"ForgotPassword"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Reset Pwd",
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {}
+			},
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:16798/api/Account/ResetPassword?Id=031be113-cd11-417e-86b1-b8ee2c035437&Token=Q2ZESjhBZFRTeDM5Z3FWSGtMdThUcjdPdmZkVkVuZUJ6ZkV5UU03ZldIVjFnOVFxUFhuRzBRMkRpejdhYjJxbmNLbk11bFhHUS9MNkEwTmRYbkFmWDI5QWFNV3Z3TlhRZUZ3alV2WC8veFpGZHdEeWxFS2FmSWgrdGxqWkxBamg0N2FTbytvUEF4WWxGMzRaeExJSEx4WUtYYTVWWExSZ1ZmcGhxbVk0UHlraE81aXh1Q2dQZWhHKzJRMWJmREFxdzI1bExaTHZWMXNXc0RUalp1b3JtV29FMmJuQVhOU0RiSVkzRFQxZTdkQWtlOStR",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "16798",
+					"path": [
+						"api",
+						"Account",
+						"ResetPassword"
+					],
+					"query": [
+						{
+							"key": "Id",
+							"value": "031be113-cd11-417e-86b1-b8ee2c035437"
+						},
+						{
+							"key": "Token",
+							"value": "Q2ZESjhBZFRTeDM5Z3FWSGtMdThUcjdPdmZkVkVuZUJ6ZkV5UU03ZldIVjFnOVFxUFhuRzBRMkRpejdhYjJxbmNLbk11bFhHUS9MNkEwTmRYbkFmWDI5QWFNV3Z3TlhRZUZ3alV2WC8veFpGZHdEeWxFS2FmSWgrdGxqWkxBamg0N2FTbytvUEF4WWxGMzRaeExJSEx4WUtYYTVWWExSZ1ZmcGhxbVk0UHlraE81aXh1Q2dQZWhHKzJRMWJmREFxdzI1bExaTHZWMXNXc0RUalp1b3JtV29FMmJuQVhOU0RiSVkzRFQxZTdkQWtlOStR"
+						},
+						{
+							"key": "NewPassword",
+							"value": "Mahfud@12345",
+							"disabled": true
+						},
+						{
+							"key": "ConfirmNewPassword",
+							"value": "Mahfud@12345",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Home",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImZhOTY4MGUzLTQ2NmItNDAzZi04MjQ4LTVlZjkyMDg3MjQwMSIsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL2VtYWlsYWRkcmVzcyI6IkhhbXphaDEyMzQ1NkBnbWFpbC5jb20iLCJleHAiOjE2NzE1MDUxMDEsImlzcyI6Imh0dHA6Ly9sb2NhbGhvc3Q6MTY3OTgiLCJhdWQiOiJVc2VyQ29sbGFnZSJ9.nQhIrIOulHYPq3ZqmcIP3SN9ukwg7iY18wdL10-_wDM",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:16798/api/Home",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "16798",
+					"path": [
+						"api",
+						"Home"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Logout",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImZhOTY4MGUzLTQ2NmItNDAzZi04MjQ4LTVlZjkyMDg3MjQwMSIsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL2VtYWlsYWRkcmVzcyI6IkhhbXphaDEyMzQ1NkBnbWFpbC5jb20iLCJleHAiOjE2NzE1MDUyMDcsImlzcyI6Imh0dHA6Ly9sb2NhbGhvc3Q6MTY3OTgiLCJhdWQiOiJVc2VyQ29sbGFnZSJ9.6pMhqTxWDbPvjBlVJctLZayvbK0sm93IXVy9D6YLlNE",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:16798/api/Account/Logout",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "16798",
+					"path": [
+						"api",
+						"Account",
+						"Logout"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Refresh Token",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"RefreshToken\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2NzQxOTU1NjMsImlzcyI6Imh0dHA6Ly9sb2NhbGhvc3Q6MTY3OTgiLCJhdWQiOiJVc2VyQ29sbGFnZSJ9.2hXOzAuoDH1zEsGCvSSfNOZ1svZLr_vKuGuD4jep00U\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:16798/api/Account/refresh",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "16798",
+					"path": [
+						"api",
+						"Account",
+						"refresh"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
