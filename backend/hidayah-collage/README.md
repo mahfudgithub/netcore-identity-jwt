@@ -4,7 +4,7 @@ This API building with C# languange , framework .net core, and package from nuge
 
 ## Feature
 - Register
-	- User can be register with `API Spec`
+	- User can be register this application with `API Spec`
 	
 	Request :
 	- Method : POST
@@ -12,6 +12,7 @@ This API building with C# languange , framework .net core, and package from nuge
 	- Header :
 		- Content-Type: application/json
 	- Body :
+	
 	```json 
 	{
 		"FirstName" : "string",
@@ -24,6 +25,7 @@ This API building with C# languange , framework .net core, and package from nuge
 	```
 	
 	Response : 
+	
 	```json 
 	{
 		"status" : "bool",
@@ -36,7 +38,145 @@ This API building with C# languange , framework .net core, and package from nuge
 		 }
 	}
 	```
+	
 - Login (Sign In)
+
+	Request :
+	- Method : POST
+	- Endpoint : `/api/account/login`
+	- Header :
+		- Content-Type: application/json
+	- Body :
+	
+	```json 
+	{
+		"Email" : "string, EmailAddress",
+		"Password" : "string"
+	}
+	```
+	
+	Response : 
+	
+	```json 
+	{
+		"status" : "bool",
+		"message" : "string",
+		"data" : {
+			 "refreshToken" : "string",
+			 "firstName" : "string",
+			 "lastName" : "string",
+			 "username" : "string",
+			 "token" : "string",
+			 "expireDate" : "Date"
+		 }
+	}
+	```
+	
+- Confirm Email
+	- After user register, system will be send your email for confirmation. no need api spec
+	
+- Forget Password
+	- This function user , when you forget your password, system will be send email to your email address
+	
+	Request :
+	- Method : POST
+	- Endpoint : `/api/account/forgotpassword`
+	- Header :
+		- Content-Type: application/json
+	- Body :
+	
+	```json 
+	{
+		"Email" : "string, EmailAddress"
+	}
+	```
+	
+	Response : 
+	
+	```json 
+	{
+		"status" : "bool",
+		"message" : "string",
+		"data" : {
+			 "status" : "bool",
+			 "body" : "string"
+		 }
+	}
+	```
+	
+- Reset Password (Set Password after your forget email)
+	
+	Request :
+	- Method : POST
+	- Endpoint : `/api/account/resetpassword`
+	- Query Param :
+		- id : string , unique
+		- token : string, unique
+		
+	Response :
+	
+	```json 
+	{
+		"status" : "bool",
+		"message" : "string",
+		"data" : {
+			 "email" : "string",
+		 }
+	}
+	```
+	
+- Refresh Token
+	- This function for generate new token when you call api with authentication
+	
+	Request :
+	- Method : POST
+	- Endpoint : `/api/account/refresh`
+	- Header :
+		- Content-Type: application/json
+	- Body :
+		
+	```json 
+	{
+		"RefreshToken" : "string"
+	}
+	```
+		
+	Response :
+	
+	```json 
+	{
+		"status" : "bool",
+		"message" : "string",
+		"data" : {
+			 "refreshToken" : "string",
+			 "firstName" : "string",
+			 "lastName" : "string",
+			 "username" : "string",
+			 "token" : "string",
+			 "expireDate" : "Date"
+		 }
+	}
+	```
+	
+- Logout
+
+	Request :
+	- Method : DELETE
+	- Endpoint : `/api/account/logout`
+	- Authorization
+		- Bearer Token : "your secret api key"
+		
+	Response :
+	
+	```json 
+	{
+		"status" : "bool",
+		"message" : "string",
+		"data" : null
+	}
+	```
+	
+	
 	
 
 # API Spec
