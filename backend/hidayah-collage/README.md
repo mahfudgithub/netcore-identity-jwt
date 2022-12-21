@@ -1,3 +1,42 @@
+# API Description
+
+This API building with C# languange , framework .net core, and package from nuget package manager . And Database SQL Server
+
+## Feature
+- Register
+	- User can be register with `API Spec`
+	Request :
+	- Method : POST
+	- Endpoint : `/api/account/register`
+	- Header :
+		- Content-Type: application/json
+	- Body :
+	```json 
+	{
+		"FirstName" : "string",
+		"LastName" : "string, null",
+		"UserName" : "string,unique",
+		"Email" : "string, EmailAddress",
+		"Password" : "string",
+		"ConfirmPassword": "string"
+	}
+	```
+	
+	Response : 
+	```json 
+	{
+		"status" : "bool",
+		"message" : "string",
+		"data" : {
+			 "FirstName" : "string",
+			 "LastName" : "string, null",
+			 "UserName" : "string,unique",
+			 "Email" : "string, EmailAddress"
+		 }
+	}
+	```
+	
+
 # API Spec
 
 ## Authentication
