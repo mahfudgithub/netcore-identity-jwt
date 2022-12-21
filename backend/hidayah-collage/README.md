@@ -40,6 +40,7 @@ This API building with C# languange , framework .net core, and package from nuge
 	```
 	
 - Login (Sign In)
+	- This function you can be login with your username or email address
 
 	Request :
 	- Method : POST
@@ -73,10 +74,10 @@ This API building with C# languange , framework .net core, and package from nuge
 	```
 	
 - Confirm Email
-	- After user register, system will be send your email for confirmation. no need api spec
+	- After user register, system will be send to your email for confirmation. no need api spec
 	
 - Forget Password
-	- This function user , when you forget your password, system will be send email to your email address
+	- This function use, when you forget your password, system will be send email to your email address
 	
 	Request :
 	- Method : POST
@@ -104,14 +105,16 @@ This API building with C# languange , framework .net core, and package from nuge
 	}
 	```
 	
-- Reset Password (Set Password after your forget email)
+- Reset Password (Set Password after you forget email)
 	
 	Request :
 	- Method : POST
 	- Endpoint : `/api/account/resetpassword`
-	- Query Param :
-		- id : string , unique
-		- token : string, unique
+	- Form Param :
+		- email : string
+		- token : string
+		- password : string 
+		- newpassword : string
 		
 	Response :
 	
