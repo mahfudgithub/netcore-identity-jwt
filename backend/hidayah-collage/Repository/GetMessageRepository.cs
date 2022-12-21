@@ -1,4 +1,5 @@
 ﻿using hidayah_collage.DataContext;
+using hidayah_collage.Models.MessageResponse;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -19,9 +20,17 @@ namespace hidayah_collage.Repository
 
         public string GetMeessageText(string code)
         {
-            return _appDbContext.Message
-                .FromSqlRaw("SELECT * FROM Message WHERE MSG_CD = {0}", code).FirstOrDefault().MSG_TEXT;
+            //return _appDbContext.Message
+            //    .FromSqlRaw("SELECT * FROM Message WHERE MSG_CD = {0}", code).FirstOrDefault().MSG_TEXT;
+            //var key = new Message
+            //{
+            //    MSG_CD = code
+            //};
+            var data = _appDbContext.Message.FirstOrDefault(x => x.MSG_CD == code);
+            if (data == null)
+                return "Message Code Not Found";
 
+            return _appDbContext.Message.Where(x => x.MSG_CD == code).FirstOrDefault().MSG_TEXT;
         }
     }
 }

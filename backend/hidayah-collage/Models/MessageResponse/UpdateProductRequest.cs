@@ -6,10 +6,9 @@ using System.Threading.Tasks;
 
 namespace hidayah_collage.Models.MessageResponse
 {
-    public class Message
+    public class UpdateProductRequest
     {
-        [Key]
-        public string MSG_CD { get; set; }
-        public string MSG_TEXT { get; set; }
+        [StringLength(200)]
+        public string MsgText { get; set; }
     }
 }

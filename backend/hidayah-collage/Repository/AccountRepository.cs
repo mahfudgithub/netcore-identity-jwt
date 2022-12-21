@@ -452,7 +452,7 @@ namespace hidayah_collage.Repository
             response.RefreshToken = refreshToken;
 
             webResponse.status = true;
-            webResponse.message = _getMessageRepository.GetMeessageText("SUC003");
+            webResponse.message = _getMessageRepository.GetMeessageText("SUC005");
             webResponse.data = response;
 
             return webResponse;
