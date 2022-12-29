@@ -7,13 +7,13 @@
             <h3 class="text-center mb-4">Sign In</h3>
             <div class="forms-inputs mb-4">
               <div class="input-group">
-                <input autocomplete="off" type="text" class="form-control" v-model="email" placeholder="Email or username" maxlength="50" />
+                <input autocomplete="off" type="text" class="form-control border-danger" v-model="email" placeholder="Email or username" maxlength="50" />
               </div>
               <div class="invalid-feedback">A valid email is required!</div>
             </div>
             <div class="forms-inputs mb-4">
               <div class="input-group">
-                <input :type="passwordText" class="form-control" v-model="password" aria-label="Password" placeholder="Password" maxlength="50" required />
+                <input :type="passwordText" class="form-control border-danger" v-model="password" aria-label="Password" placeholder="Password" maxlength="50" required />
                 <span class="input-group-text">
                   <i class="bi" :class="[eyeIcon ? 'bi-eye-fill' : 'bi-eye-slash-fill']" @click="passwordType(passwordText)" id="togglePassword" style="font-size: 1.1rem; cursor: pointer" aria-hidden="true"></i>
                 </span>

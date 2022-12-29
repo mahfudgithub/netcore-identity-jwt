@@ -27,13 +27,14 @@ using System.Threading.Tasks;
 namespace hidayah_collage
 {
     public class Startup
-    {
+    {        
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
         }
 
         public IConfiguration Configuration { get; }
+        private readonly string _policyName = "CorsPolicy";
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
@@ -100,11 +101,23 @@ namespace hidayah_collage
             services.AddTransient<IMessage, MessageRepository>();
             services.AddTransient<IMailService, MailServiceRepository>();
 
+            //services.AddCors(option =>
+            //{
+            //    option.AddDefaultPolicy(builder =>
+            //    {
+            //        builder.AllowAnyOrigin().AllowAnyOrigin().AllowAnyMethod();
+            //    });
+            //});
+            //var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
+
             services.AddCors(option =>
             {
-                option.AddDefaultPolicy(builder =>
+                option.AddPolicy(_policyName, builder =>
                 {
-                    builder.AllowAnyOrigin().AllowAnyOrigin().AllowAnyMethod();
+                    builder.WithOrigins(Configuration["AppClientUrl"])
+                    .WithMethods("PUT", "DELETE", "POST", "GET")
+                    .AllowAnyHeader()
+                    .AllowAnyOrigin();
                 });
             });
 
@@ -144,7 +157,7 @@ namespace hidayah_collage
             app.UseAuthentication();
             app.UseAuthorization();
 
-            app.UseCors();
+            app.UseCors(_policyName);
 
             app.UseEndpoints(endpoints =>
             {
