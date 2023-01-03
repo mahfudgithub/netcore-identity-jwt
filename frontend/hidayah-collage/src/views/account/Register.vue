@@ -4,37 +4,81 @@
       <div class="col-md-5">
         <div class="card px-5 py-4 rounded bg-light border-primary shadow" id="form1">
           <div class="form-data">
-            <form action="#" v-on:submit="onRegister">
+            <form action="#" v-on:submit.prevent="onRegister" class="needs-validation row g-12" novalidate>
               <h3 class="text-center mb-4">Register</h3>
-              <div class="forms-inputs mb-2">
-                <span>First Name</span>
-                <input autocomplete="off" type="text" class="form-control border-danger" v-model="firstName" placeholder="first name" maxlength="50" required />
-                <div class="invalid-feedback">A valid email is required!</div>
+              <div class="forms-inputs mb-2 col-md-6">
+                <label>First Name<span class="required">*</span></label>
+                <input
+                  autocomplete="off"
+                  type="text"
+                  class="form-control"
+                  :class="{ 'is-invalid': isSubmitted && form.firstName.$error }"
+                  id="firstName"
+                  name="firstName"
+                  v-model="form.firstName.$value"
+                  placeholder="first name"
+                  maxlength="50"
+                  required
+                />
+                <div class="invalid-feedback">{{ form.firstName.$error?.message }}</div>
               </div>
-              <div class="forms-inputs mb-2">
+              <div class="forms-inputs mb-2 col-md-6">
                 <span>Last Name</span>
-                <input autocomplete="off" type="text" class="form-control" v-model="lastName" placeholder="last name" maxlength="50" />
+                <input autocomplete="off" type="text" class="form-control" id="lastName" name="lastName" v-model="form.lastName.$value" placeholder="last name" maxlength="50" />
                 <div class="invalid-feedback">Password must be 8 character!</div>
               </div>
               <div class="forms-inputs mb-2">
-                <span>Username</span>
-                <input autocomplete="off" type="text" class="form-control border-danger" v-model="username" placeholder="username" required maxlength="30" />
-                <div class="invalid-feedback">Password must be 8 character!</div>
+                <label>Username<span class="required">*</span></label>
+                <input
+                  autocomplete="off"
+                  type="text"
+                  class="form-control"
+                  :class="{ 'is-invalid': isSubmitted && form.username.$error }"
+                  id="username"
+                  name="username"
+                  v-model="form.username.$value"
+                  placeholder="username"
+                  required
+                  maxlength="30"
+                />
+                <div class="invalid-feedback">{{ form.username.$error?.message }}</div>
               </div>
               <div class="forms-inputs mb-2">
-                <span>Email</span>
-                <input autocomplete="off" type="email" class="form-control border-danger" v-model="email" placeholder="email" maxlength="50" required />
-                <div class="invalid-feedback">Password must be 8 character!</div>
+                <label>Email<span class="required">*</span></label>
+                <input autocomplete="off" type="email" class="form-control" :class="{ 'is-invalid': isSubmitted && form.email.$error }" id="email" name="email" v-model="form.email.$value" placeholder="email" maxlength="50" required />
+                <div class="invalid-feedback">{{ form.email.$error?.message }}</div>
               </div>
               <div class="forms-inputs mb-2">
-                <span>Password</span>
-                <input autocomplete="off" type="password" class="form-control border-danger" v-model="password" placeholder="password" maxlength="50" required />
-                <div class="invalid-feedback">Password must be 8 character!</div>
+                <label>Password<span class="required">*</span></label>
+                <input
+                  autocomplete="off"
+                  type="password"
+                  class="form-control"
+                  :class="{ 'is-invalid': isSubmitted && form.password.$error }"
+                  id="password"
+                  name="password"
+                  v-model="form.password.$value"
+                  placeholder="password"
+                  maxlength="50"
+                  required
+                />
+                <div class="invalid-feedback">{{ form.password.$error?.message }}</div>
               </div>
               <div class="forms-inputs mb-4">
-                <span>Confirm Password</span>
-                <input autocomplete="off" type="password" class="form-control border-danger" v-model="confPassword" placeholder="confirm password" maxlength="50" required />
-                <div class="invalid-feedback">Password must be 8 character!</div>
+                <label>Confirm Password<span class="required">*</span></label>
+                <input
+                  autocomplete="off"
+                  type="password"
+                  class="form-control"
+                  :class="{ 'is-invalid': isSubmitted && form.confPassword.$error }"
+                  id="confPassword"
+                  name="confPassword"
+                  v-model="form.confPassword.$value"
+                  placeholder="confirm password"
+                  maxlength="50"
+                  required
+                />
+                <div class="invalid-feedback">{{ form.confPassword.$error?.message }}</div>
               </div>
               <div class="mb-3">
                 <div class="d-grid gap-2 d-md-flex justify-content-md-center">
@@ -53,44 +97,104 @@
 <script>
 import axios from "axios";
 import { useToast } from "vue-toastification";
+import { defineForm, field, isValidForm, toObject } from "vue-yup-form";
+import * as Yup from "yup";
+
+const generateForm = () => {
+  const firstName = field("", Yup.string().required("first name is required field"));
+  const lastName = field("", Yup.string());
+  const username = field("", Yup.string().required("Username is required filed").min(5, "Username must be at least 5 characters").max(30));
+  const email = field("", Yup.string().email().required("Email is required filed"));
+  const password = field("", Yup.string().required("Password is required field").min(5, "Password must be at least 5 characters"));
+  const confPassword = field(
+    "",
+    Yup.string()
+      .required("Confirm Password is required field")
+      .label("Confirm Password")
+      //.oneOf([password.$value, null], "Passwords must match")
+      //.oneOf([password.$value], ({ label }) => `${label} does not match`)
+      .test("passwords-match", "Password does not match", function (value) {
+        return password.$value === value;
+      })
+  );
+  return defineForm({
+    firstName,
+    lastName,
+    username,
+    email,
+    password,
+    confPassword,
+  });
+};
 
 export default {
   name: "Register",
   data() {
+    const schema = Yup.object().shape({
+      firstName: Yup.string().required("First Name is required"),
+      lastName: Yup.string().required("Last Name is required"),
+      username: Yup.string().required("Username is required"),
+      email: Yup.string().email().required("Email is required"),
+      password: Yup.string().required("Password is required").min(6, "Password must be at least 6 characters"),
+      confPassword: Yup.string()
+        .required("Confirm Password is required")
+        .oneOf([Yup.ref("password"), null], "Passwords must match"),
+    });
+
     return {
-      firstName: "",
-      lastName: "",
-      username: "",
-      email: "",
-      password: "",
-      confPassword: "",
+      schema,
+      isSubmitted: false,
       isDisabled: false,
+      valid: false,
     };
   },
   setup() {
     // Get toast interface
     const toast = useToast();
 
+    const form = generateForm();
+
+    const checkForm = (e) => {
+      e.target.classList.add("was-validated");
+    };
+
     // Make it available inside methods
-    return { toast };
+    return { toast, checkForm, form };
   },
   // beforeMount() {
   //   console.log(`${import.meta.env.VITE_APP_BASE_API_URL}/account/register`);
   // },
   methods: {
     onRegister(e) {
+      // this.validate();
+      // if (!this.valid) {
+      //   this.checkForm(e);
+      //   e.preventDefault();
+      //   return;
+      // }
+      this.isSubmitted = true;
+      if (!isValidForm(this.form)) {
+        //e.preventDefault();
+        //alert("required");
+        return;
+      } //else {
+      //   alert(JSON.stringify(toObject(this.form), null, 2));
+      //   console.log(toObject(this.form).firstName);
+      //   return;
+      // }
       this.$isLoading(true); // show loading screen
       this.isDisabled = true;
-      e.preventDefault();
+      //e.preventDefault();
+
       try {
         axios
           .post(`${import.meta.env.VITE_APP_BASE_API_URL}/account/register`, {
-            FirstName: this.firstName,
-            LastName: this.lastName,
-            UserName: this.username,
-            Email: this.email,
-            Password: this.password,
-            ConfirmPassword: this.confPassword,
+            FirstName: toObject(this.form).firstName,
+            LastName: toObject(this.form).lastName,
+            UserName: toObject(this.form).username,
+            Email: toObject(this.form).email,
+            Password: toObject(this.form).password,
+            ConfirmPassword: toObject(this.form).confPassword,
           })
           .then((response) => {
             this.$isLoading(false);
@@ -118,8 +222,43 @@ export default {
         this.isDisabled = false;
       }
     },
+    validate: function () {
+      if (this.validFirstName(this.firstName)) {
+        this.valid = true;
+      }
+    },
+    validEmail: function (email) {
+      var re = /(.+)@(.+){2,}\.(.+){2,}/;
+      if (re.test(email.toLowerCase())) {
+        return true;
+      }
+    },
+
+    validPassword: function (password) {
+      if (password.length > 6) {
+        return true;
+      }
+    },
+
+    validFirstName: function (name) {
+      if (name != "" || name.length > 0) {
+        return true;
+      } else {
+        return false;
+      }
+    },
+
+    validUsername: function (username) {
+      if (!/\s/.test(username)) {
+        return true;
+      }
+    },
   },
 };
 </script>
 
-<style></style>
+<style>
+.required {
+  color: red;
+}
+</style>

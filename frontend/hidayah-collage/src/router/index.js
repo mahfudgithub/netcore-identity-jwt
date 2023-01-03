@@ -36,6 +36,28 @@ const router = createRouter({
   // ],
 });
 
+// router.beforeEach((to, from, next) => {
+//   if (to.name === 'login') {
+//     next() // login route is always  okay (we could use the requires auth flag below). prevent a redirect loop
+//   } else if (to.meta && to.meta.requiresAuth === false) {
+//     next() // requires auth is explicitly set to false
+//   } else if (store.getters.isLoggedIn) {
+//     next() // i'm logged in. carry on
+//   } else {
+//     next({ name: 'login' }) // always put your redirect as the default case
+//   }
+// const token = localStorage.getItem("X-Access-Token");
+// // If logged in, or going to the Login page.
+// if (token || to.name === "register" || to.name === "login") {
+//   // Continue to page.
+//   console.log("token :" + token);
+//   next();
+// } else {
+//   // Not logged in, redirect to login.
+//   next({ name: "register" });
+// }
+//});
+
 router.beforeEach(async (to) => {
   // redirect to login page if not logged in and trying to access a restricted page
   const publicPages = ["/account/login", "/account/register"];
