@@ -67,7 +67,7 @@ namespace hidayah_collage.Controllers
                     }
                     else
                     {
-                        return BadRequest(result);
+                        return Ok(result);
                     }
                 }
                 catch (Exception)
@@ -97,7 +97,7 @@ namespace hidayah_collage.Controllers
                     }
                     else
                     {
-                        return BadRequest(result);
+                        return Ok(result);
                     }
                 }
                 catch (Exception)
@@ -109,7 +109,7 @@ namespace hidayah_collage.Controllers
         }
 
         [HttpPost("ResetPassword")]
-        public async Task<IActionResult> ResetPasswordAsync([FromForm] ResetPasswordRequest resetPasswordRequest)
+        public async Task<IActionResult> ResetPasswordAsync([FromBody] ResetPasswordRequest resetPasswordRequest)
         {
             if (ModelState.IsValid)
             {
@@ -122,7 +122,7 @@ namespace hidayah_collage.Controllers
                     }
                     else
                     {
-                        return BadRequest(result);
+                        return Ok(result);
                     }
                 }
                 catch (Exception)
@@ -164,7 +164,7 @@ namespace hidayah_collage.Controllers
                     }
                     else
                     {
-                        return BadRequest(result);
+                        return Ok(result);
                     }
                 }
                 catch (Exception)

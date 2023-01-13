@@ -1,4 +1,23 @@
 <template>
+  <!-- Modal -->
+  <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-sm">
+      <div class="modal-content">
+        <!-- <div class="modal-header">
+          <h1 class="modal-title fs-5" id="exampleModalLabel">Confirmation</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div> -->
+        <div class="modal-body">
+          <kbd><samp>Are you sure to exit</samp></kbd>
+        </div>
+        <div class="modal-footer btn-group" role="group">
+          <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal" id="close">No</button>
+          <button type="button" class="btn btn-danger btn-sm" @click="onLogout">Yes</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <aside :class="`${is_expanded ? 'is-expanded' : ''}`">
     <div class="logo">
       <img :src="logoURL" alt="Vue" />
@@ -16,7 +35,11 @@
         <span class="material-icons">home</span>
         <span class="text">Home</span>
       </RouterLink>
-      <RouterLink :to="{ name: 'student' }" class="button">
+      <RouterLink :to="{ name: 'message' }" class="button">
+        <span class="material-icons">email</span>
+        <span class="text">Message</span>
+      </RouterLink>
+      <!-- <RouterLink :to="{ name: 'student' }" class="button">
         <span class="material-icons">description</span>
         <span class="text">Student</span>
       </RouterLink>
@@ -27,24 +50,28 @@
       <RouterLink to="/contact" class="button">
         <span class="material-icons">email</span>
         <span class="text">Contact</span>
-      </RouterLink>
+      </RouterLink> -->
     </div>
 
     <div class="flex"></div>
 
     <div class="menu">
-      <RouterLink to="/settings" class="button">
+      <!-- <RouterLink to="/settings" class="button">
         <span class="material-icons">settings</span>
         <span class="text">Settings</span>
-      </RouterLink>
+      </RouterLink> -->
+      <!-- Button trigger modal -->
+      <a href="#" class="button" data-bs-toggle="modal" data-bs-target="#exampleModal"><span class="material-icons">logout</span><span class="text">Logout</span> </a>
     </div>
   </aside>
 </template>
 
-<script setup>
+<script>
 import { ref } from "vue";
 import logoURL from "../assets/logo.png";
-import { RouterLink, RouterView } from "vue-router";
+import axios from "axios";
+import { AuthService } from "@/services/auth.service.js";
+import TokenService from "@/services/token.service.js";
 
 const is_expanded = ref(localStorage.getItem("is_expanded") === "true");
 
@@ -52,6 +79,141 @@ const ToggleMenu = () => {
   is_expanded.value = !is_expanded.value;
   localStorage.setItem("is_expanded", is_expanded.value);
 };
+
+export default {
+  name: "sidebar",
+  data() {
+    return {
+      token: "",
+      expire: "",
+    };
+  },
+  setup() {
+    //const interceptor = new AuthService();
+    const api = new AuthService();
+
+    const exp = "";
+
+    //const axiosInterceptor = axios.create();
+
+    //const jwtDecode = VueJwtDecode();
+
+    // axiosInterceptor.interceptors.request.use(
+    //   (config) => {
+    //     const currentDate = new Date();
+    //     //if (parseInt(TokenService.getExpireToken()) * 1000 < currentDate.getTime()) {
+    //     //const user = api.refreshToken({ token: TokenService.getRefreshToken() });
+    //     //config.headers.Authorization = `Bearer ${user.token}`;
+    //     //}
+    //     // if (parseInt(expire) * 1000 < currentDate.getTime()){
+    //     //     const response = await axios.get('http://localhost:5000/token');
+    //     //     config.headers.Authorization = `Bearer ${response.data.accessToken}`;
+    //     //     setToken(response.data.accessToken);
+    //     //     // const decode = jwt_decode(response.data.accessToken);
+    //     //     // setName(decode.name);
+    //     //     // setExpire(decode.exp);
+    //     // }
+    //     return config;
+    //   },
+    //   (error) => {
+    //     return Promise.reject(error);
+    //   }
+    // );
+
+    return { api };
+  },
+  beforeMount() {
+    this.token = this.$cookies.get("user").token;
+    this.expire = this.$cookies.get("user").username;
+    //this.interceptor.intercepors();
+  },
+  created() {
+    const axiosInterceptor = axios.create({
+      baseURL: `${import.meta.env.VITE_APP_BASE_API_URL}`,
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    axiosInterceptor.interceptors.request.use(
+      async (config) => {
+        const currentDate = new Date();
+        console.log("exp " + this.expire);
+        if (parseInt(TokenService.getExpireToken()) * 1000 < currentDate.getTime()) {
+          console.log("inrter");
+          const user = AuthService.refreshToken({ token: TokenService.getRefreshToken() });
+          // const response = await axios.get('http://localhost:5000/token');
+          // config.headers.Authorization = `Bearer ${response.data.accessToken}`;
+          // setToken(response.data.accessToken);
+          // const decode = jwt_decode(response.data.accessToken);
+          // setName(decode.name);
+          // setExpire(decode.exp);
+        }
+        return config;
+      },
+      (error) => {
+        console.log("promise");
+        return Promise.reject(error);
+      }
+    );
+  },
+  methods: {
+    onLogout(e) {
+      this.$isLoading(true); // show loading screen
+      try {
+        //this.api
+        axios
+          //this.axiosInterceptor
+          //this.interceptor
+          //.intercepors
+          .delete(`${import.meta.env.VITE_APP_BASE_API_URL}/account/logout`, {
+            headers: {
+              Authorization: `Bearer ${this.token}`,
+            },
+            withCredentials: true,
+          })
+          .then((response) => {
+            if (response.status === 204) {
+              this.closeModal();
+              this.$cookies.remove("user");
+              this.$router.push({ name: "login" });
+            }
+          })
+          .catch((error) => {
+            if (error.response) {
+              //this.toast.error(error.response.data.title);
+              //console.log("not auth 1");
+            } else if (error.request) {
+              alert(error.message);
+              //console.log("Error: Network Error");
+            } else {
+            }
+          })
+          .finally(() => {
+            this.closeModal();
+            this.$isLoading(false); // hide loading screen
+          });
+      } catch (error) {
+        console.log("error " + error);
+        this.$isLoading(false); // hide loading screen
+      }
+    },
+    closeModal() {
+      document.getElementById("close").click();
+    },
+  },
+};
+
+// function onLogout(e) {
+//   console.log("keluar aja ");
+// }
+// onBeforeMount(() => {
+//   const token = this.$cookies.get("user").firstName;
+// });
+
+// onMounted(() => {
+//   console.log("monted");
+// });
 </script>
 
 <style lang="scss" scoped>

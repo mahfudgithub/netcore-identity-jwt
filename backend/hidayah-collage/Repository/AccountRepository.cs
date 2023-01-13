@@ -235,7 +235,7 @@ namespace hidayah_collage.Repository
                 emailRequest.ToEmail = user.Email;
                 emailRequest.Body = body;
                 //var mail = _mailService.SendEmailAsync(emailRequest);
-                await _mailService.SendEmailSMTPAsync(emailRequest);
+                //await _mailService.SendEmailSMTPAsync(emailRequest);
 
                 response.FirstName = registerRequest.FirstName;
                 response.Username = registerRequest.Email;
@@ -290,10 +290,12 @@ namespace hidayah_collage.Repository
                 var encodedToken = Encoding.UTF8.GetBytes(code);
                 var validToken = WebEncoders.Base64UrlEncode(encodedToken);
 
-                var callbackUrl = new Uri($"{_configuration["AppUrl"]}"+@"/ResetPassword?email=" + user.Result.Email + "&token=" + validToken);
-
+                //var callbackUrl = new Uri($"{_configuration["AppClientUrl"]}"+@"/ResetPassword?email=" + user.Result.Email + "&token=" + validToken);
+                var callbackUrl = new Uri($"{_configuration["AppClientUrl"]}" + @"/account/resetpassword?email=" + user.Result.Email + "&token=" + validToken);
                 string subject = "Reset Password";
-                string body = "Please reset your password by clicking <a href=\"" + callbackUrl + "\">Clicking here</a>";
+                string targetBody = "_blank";
+                string rel = "noopener noreferrer";
+                string body = "Please reset your password by clicking <a target=\"" + targetBody + "\" rel=\""+rel+"\" href=\"" + callbackUrl + "\"> Clicking here</a>";
 
                 emailRequest.Subject = subject;
                 emailRequest.ToEmail = user.Result.Email;
@@ -343,7 +345,7 @@ namespace hidayah_collage.Repository
                 {
                     response.Email = user.Email;
                     webResponse.status = true;
-                    webResponse.message = _getMessageRepository.GetMeessageText("SUC001");
+                    webResponse.message = _getMessageRepository.GetMeessageText("SUC007");
                     webResponse.data = response;
                 }
                 else

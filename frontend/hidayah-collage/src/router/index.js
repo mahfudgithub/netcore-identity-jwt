@@ -1,6 +1,9 @@
 import { createRouter, createWebHistory } from "vue-router";
 import HomeView from "../views/HomeView.vue";
-import LoginView from "../views/LoginView.vue";
+import { useAuthStore } from "../stores/auth.stores.js";
+import { useCookies } from "vue3-cookies";
+
+const { cookies } = useCookies();
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -9,6 +12,7 @@ const router = createRouter({
     {
       path: "/",
       name: "home",
+      props: true,
       component: HomeView,
     },
     {
@@ -26,6 +30,30 @@ const router = createRouter({
       // this generates a separate chunk (About.[hash].js) for this route
       // which is lazy-loaded when the route is visited.
       component: () => import("../views/account/Register.vue"),
+    },
+    {
+      path: "/account/forget",
+      name: "forget",
+      // route level code-splitting
+      // this generates a separate chunk (About.[hash].js) for this route
+      // which is lazy-loaded when the route is visited.
+      component: () => import("../views/account/ForgotPassword.vue"),
+    },
+    {
+      path: "/account/resetpassword",
+      name: "resetpassword",
+      // route level code-splitting
+      // this generates a separate chunk (About.[hash].js) for this route
+      // which is lazy-loaded when the route is visited.
+      component: () => import("../views/account/ResetPassword.vue"),
+    },
+    {
+      path: "/message",
+      name: "message",
+      // route level code-splitting
+      // this generates a separate chunk (About.[hash].js) for this route
+      // which is lazy-loaded when the route is visited.
+      component: () => import("../views/MessageMaster.vue"),
     },
   ],
   // routes: [
@@ -58,14 +86,25 @@ const router = createRouter({
 // }
 //});
 
-router.beforeEach(async (to) => {
-  // redirect to login page if not logged in and trying to access a restricted page
-  const publicPages = ["/account/login", "/account/register"];
-  const authRequired = !publicPages.includes(to.path);
+// router.beforeEach(async (to) => {
+//   // redirect to login page if not logged in and trying to access a restricted page
+//   const publicPages = ["/account/login", "/account/register"];
+//   const authRequired = !publicPages.includes(to.path);
+//   const authStore = useAuthStore();
 
-  if (authRequired && !JSON.parse(localStorage.getItem("user"))) {
-    return "/account/login";
-  }
+//   if (authRequired && !authStore.user) {
+//     authStore.returnUrl = to.fullPath;
+//     return "/account/login";
+//   }
+// });
+
+router.beforeEach((to, from, next) => {
+  //localStorage.getItem("user"))
+  const publicPages = ["/account/login", "/account/register", "/account/forget", "/account/resetpassword"];
+  const authRequired = !publicPages.includes(to.path);
+  const currentUser = cookies.isKey("user");
+  if (authRequired && !currentUser) next({ name: "login" });
+  else next();
 });
 
 export default router;

@@ -95,13 +95,15 @@
 </template>
 
 <script>
-import axios from "axios";
+//import axios from "axios";
 import { useToast } from "vue-toastification";
 import { defineForm, field, isValidForm, toObject } from "vue-yup-form";
 import * as Yup from "yup";
+import { AuthService as authService } from "@/services/auth.service.js";
+import { User } from "@/models/register.js";
 
 const generateForm = () => {
-  const firstName = field("", Yup.string().required("first name is required field"));
+  const firstName = field("", Yup.string().required("First name is required field"));
   const lastName = field("", Yup.string());
   const username = field("", Yup.string().required("Username is required filed").min(5, "Username must be at least 5 characters").max(30));
   const email = field("", Yup.string().email().required("Email is required filed"));
@@ -152,6 +154,10 @@ export default {
     // Get toast interface
     const toast = useToast();
 
+    const api = new authService();
+
+    const user = new User();
+
     const form = generateForm();
 
     const checkForm = (e) => {
@@ -159,7 +165,7 @@ export default {
     };
 
     // Make it available inside methods
-    return { toast, checkForm, form };
+    return { toast, checkForm, form, api, user };
   },
   // beforeMount() {
   //   console.log(`${import.meta.env.VITE_APP_BASE_API_URL}/account/register`);
@@ -187,17 +193,28 @@ export default {
       //e.preventDefault();
 
       try {
-        axios
-          .post(`${import.meta.env.VITE_APP_BASE_API_URL}/account/register`, {
-            FirstName: toObject(this.form).firstName,
-            LastName: toObject(this.form).lastName,
-            UserName: toObject(this.form).username,
-            Email: toObject(this.form).email,
-            Password: toObject(this.form).password,
-            ConfirmPassword: toObject(this.form).confPassword,
+        this.user = {
+          FirstName: toObject(this.form).firstName,
+          LastName: toObject(this.form).lastName,
+          UserName: toObject(this.form).username,
+          Email: toObject(this.form).email,
+          Password: toObject(this.form).password,
+          ConfirmPassword: toObject(this.form).confPassword,
+        };
+        // axios
+        //   .post(`${import.meta.env.VITE_APP_BASE_API_URL}/account/register`, {
+        //     FirstName: toObject(this.form).firstName,
+        //     LastName: toObject(this.form).lastName,
+        //     UserName: toObject(this.form).username,
+        //     Email: toObject(this.form).email,
+        //     Password: toObject(this.form).password,
+        //     ConfirmPassword: toObject(this.form).confPassword,
+        //   })
+        this.api
+          .register({
+            user: this.user,
           })
           .then((response) => {
-            this.$isLoading(false);
             if (response.data.status) {
               this.toast.success(response.data.message);
               this.$router.push("/account/login");
@@ -206,14 +223,16 @@ export default {
             }
           })
           .catch((error) => {
-            this.$isLoading(false);
             if (error.response) {
-              console.log(error.response.data.errors);
-              this.toast.error(error.response.data.errors.Password[0]);
+              //console.log(error.response.data.errors);
+              this.toast.error(JSON.stringify(error.response.data.errors));
             } else if (error.request) {
               this.toast.error("Error: Network Error");
             } else {
             }
+          })
+          .finally(() => {
+            this.$isLoading(false); // hide loading screen
           });
       } catch (error) {
         this.$isLoading(false);
@@ -222,37 +241,37 @@ export default {
         this.isDisabled = false;
       }
     },
-    validate: function () {
-      if (this.validFirstName(this.firstName)) {
-        this.valid = true;
-      }
-    },
-    validEmail: function (email) {
-      var re = /(.+)@(.+){2,}\.(.+){2,}/;
-      if (re.test(email.toLowerCase())) {
-        return true;
-      }
-    },
+    // validate: function () {
+    //   if (this.validFirstName(this.firstName)) {
+    //     this.valid = true;
+    //   }
+    // },
+    // validEmail: function (email) {
+    //   var re = /(.+)@(.+){2,}\.(.+){2,}/;
+    //   if (re.test(email.toLowerCase())) {
+    //     return true;
+    //   }
+    // },
 
-    validPassword: function (password) {
-      if (password.length > 6) {
-        return true;
-      }
-    },
+    // validPassword: function (password) {
+    //   if (password.length > 6) {
+    //     return true;
+    //   }
+    // },
 
-    validFirstName: function (name) {
-      if (name != "" || name.length > 0) {
-        return true;
-      } else {
-        return false;
-      }
-    },
+    // validFirstName: function (name) {
+    //   if (name != "" || name.length > 0) {
+    //     return true;
+    //   } else {
+    //     return false;
+    //   }
+    // },
 
-    validUsername: function (username) {
-      if (!/\s/.test(username)) {
-        return true;
-      }
-    },
+    // validUsername: function (username) {
+    //   if (!/\s/.test(username)) {
+    //     return true;
+    //   }
+    // },
   },
 };
 </script>

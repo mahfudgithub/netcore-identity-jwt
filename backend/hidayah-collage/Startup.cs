@@ -114,10 +114,14 @@ namespace hidayah_collage
             {
                 option.AddPolicy(_policyName, builder =>
                 {
-                    builder.WithOrigins(Configuration["AppClientUrl"])
+                    builder
+                    //.AllowAnyOrigin()
+                    .WithOrigins(Configuration["AppClientUrl"])
                     .WithMethods("PUT", "DELETE", "POST", "GET")
                     .AllowAnyHeader()
-                    .AllowAnyOrigin();
+                    //.AllowAnyOrigin()
+                    .AllowCredentials()
+                    .WithExposedHeaders("X-Access-Token");
                 });
             });
 
