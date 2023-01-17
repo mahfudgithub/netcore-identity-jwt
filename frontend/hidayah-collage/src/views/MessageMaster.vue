@@ -41,9 +41,9 @@
               <th scope="col">Message Description</th>
             </tr>
           </thead>
-          <tbody v-if="messages.length > 0">
-            <tr v-for="message in messages" :key="message.msG_CD">
-              <th scope="row">1</th>
+          <tbody v-if="Object.keys(this.messages).length > 0">
+            <tr v-for="(message, index) in messages" :key="message.msG_CD">
+              <th scope="row">{{ index + 1 }}</th>
               <td>{{ message.msG_CD }}</td>
               <td>{{ message.msG_TEXT }}</td>
             </tr>
@@ -55,6 +55,23 @@
           </tbody>
         </table>
       </div>
+      <nav aria-label="Page navigation example">
+        <ul class="pagination justify-content-center">
+          <li class="page-item">
+            <a class="page-link" href="#" aria-label="Previous">
+              <span aria-hidden="true">&laquo;</span>
+            </a>
+          </li>
+          <li class="page-item"><a class="page-link" href="#">1</a></li>
+          <li class="page-item"><a class="page-link" href="#">2</a></li>
+          <li class="page-item"><a class="page-link" href="#">3</a></li>
+          <li class="page-item">
+            <a class="page-link" href="#" aria-label="Next">
+              <span aria-hidden="true">&raquo;</span>
+            </a>
+          </li>
+        </ul>
+      </nav>
     </div>
     <!-- </div> -->
     <!-- </div> -->
@@ -76,9 +93,15 @@ export default {
       expire: "",
       refreshToken: "",
       search: "",
-      messages: [{ msG_CD: "", msG_TEXT: "" }],
+      action: "",
+      messages: [],
     };
   },
+  // setup() {
+  //   let messages = ref([]);
+
+  //   return { messages };
+  // },
   beforeMount() {
     this.token = this.$cookies.get("user").token;
     this.expire = this.$cookies.get("user").expireDate;
@@ -89,6 +112,8 @@ export default {
   methods: {
     SetMessages(data) {
       this.messages = data;
+      //console.log(this.messages);
+      //console.log(Object.keys(this.messages).length);
     },
     onCheckExpire() {
       const currentDate = new Date();
@@ -121,8 +146,8 @@ export default {
               //console.log("a " + action);
               if (action == "onReady") {
                 this.onSearch();
-              } else if (action == "onSearchById") {
-                this.onSearchById(this.search);
+              } else if (action == "onById") {
+                this.onSearchById();
               }
             }
           })
@@ -143,7 +168,7 @@ export default {
     onSearch() {
       try {
         axios
-          .get(`${import.meta.env.VITE_APP_BASE_API_URL}/message`, {
+          .get(`${import.meta.env.VITE_APP_BASE_API_URL}/message?size=5&page=1`, {
             headers: {
               Authorization: `Bearer ${this.token}`,
             },
@@ -154,6 +179,8 @@ export default {
 
               this.SetMessages(listMessages);
               //console.log(this.messages);
+            } else {
+              this.SetMessages([]);
             }
           })
           .catch((error) => {
@@ -168,18 +195,22 @@ export default {
       const currentDate = new Date();
       const expireDateInt = new Date(this.expire);
       // if (parseInt(this.expire) * 1000 < currentDate.getTime()) {
-      if (expireDateInt.getTime() < currentDate.getTime()) {
-        //console.log("masuk expire");
-        this.onRefreshToken("onSearchById");
-        //console.log("a " + this.validToken);
+      if (this.search.length < 1) {
+        this.onCheckExpire();
       } else {
-        this.onSearchById(this.search);
+        if (expireDateInt.getTime() < currentDate.getTime()) {
+          //console.log("masuk expire");
+          this.onRefreshToken("onById");
+          //console.log("a " + this.validToken);
+        } else {
+          this.onSearchById();
+        }
       }
     },
-    onSearchById(id) {
+    onSearchById() {
       try {
         axios
-          .get(`${import.meta.env.VITE_APP_BASE_API_URL}/message/${id}`, {
+          .get(`${import.meta.env.VITE_APP_BASE_API_URL}/message/${this.search}`, {
             headers: {
               Authorization: `Bearer ${this.token}`,
             },
@@ -187,9 +218,11 @@ export default {
           .then((response) => {
             if (response.data.status) {
               const listMessages = response.data.data;
-
-              this.SetMessages(listMessages);
+              //console.log("total " + [listMessages].length);
+              this.SetMessages([listMessages]);
               //console.log(this.messages);
+            } else {
+              this.SetMessages([]);
             }
           })
           .catch((error) => {
