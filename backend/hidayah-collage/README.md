@@ -216,8 +216,8 @@ Response :
     "status" : "bool",
     "message" : "string",
     "data" : {
-         "MSG_CD" : "string",
-	 "MSG_TEXT" : "string"
+         "msG_CD" : "string",
+	 "msG_TEXT" : "string"
      }
 }
 ```

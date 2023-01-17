@@ -12,7 +12,7 @@
         </div>
         <div class="modal-footer btn-group" role="group">
           <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal" id="close">No</button>
-          <button type="button" class="btn btn-danger btn-sm" @click="onLogout">Yes</button>
+          <button type="button" class="btn btn-danger btn-sm" @click="onCheckExpire">Yes</button>
         </div>
       </div>
     </div>
@@ -86,13 +86,12 @@ export default {
     return {
       token: "",
       expire: "",
+      refreshToken: "",
     };
   },
   setup() {
     //const interceptor = new AuthService();
     const api = new AuthService();
-
-    const exp = "";
 
     //const axiosInterceptor = axios.create();
 
@@ -124,39 +123,45 @@ export default {
   },
   beforeMount() {
     this.token = this.$cookies.get("user").token;
-    this.expire = this.$cookies.get("user").username;
+    this.expire = this.$cookies.get("user").expireDate;
+    this.refreshToken = this.$cookies.get("user").refreshToken;
+    // const currentDate = new Date();
+    // if (parseInt(this.expire) * 1000 < currentDate.getTime()) {
+    //   this.onCheckExpire();
+    //   console.log("a");
+    // }
     //this.interceptor.intercepors();
   },
-  created() {
-    const axiosInterceptor = axios.create({
-      baseURL: `${import.meta.env.VITE_APP_BASE_API_URL}`,
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
+  // created() {
+  //   const axiosInterceptor = axios.create({
+  //     baseURL: `${import.meta.env.VITE_APP_BASE_API_URL}`,
+  //     headers: {
+  //       "Content-Type": "application/json",
+  //     },
+  //   });
 
-    axiosInterceptor.interceptors.request.use(
-      async (config) => {
-        const currentDate = new Date();
-        console.log("exp " + this.expire);
-        if (parseInt(TokenService.getExpireToken()) * 1000 < currentDate.getTime()) {
-          console.log("inrter");
-          const user = AuthService.refreshToken({ token: TokenService.getRefreshToken() });
-          // const response = await axios.get('http://localhost:5000/token');
-          // config.headers.Authorization = `Bearer ${response.data.accessToken}`;
-          // setToken(response.data.accessToken);
-          // const decode = jwt_decode(response.data.accessToken);
-          // setName(decode.name);
-          // setExpire(decode.exp);
-        }
-        return config;
-      },
-      (error) => {
-        console.log("promise");
-        return Promise.reject(error);
-      }
-    );
-  },
+  //   axiosInterceptor.interceptors.request.use(
+  //     async (config) => {
+  //       const currentDate = new Date();
+  //       console.log("exp " + this.expire);
+  //       if (parseInt(TokenService.getExpireToken()) * 1000 < currentDate.getTime()) {
+  //         console.log("inrter");
+  //         const user = AuthService.refreshToken({ token: TokenService.getRefreshToken() });
+  //         // const response = await axios.get('http://localhost:5000/token');
+  //         // config.headers.Authorization = `Bearer ${response.data.accessToken}`;
+  //         // setToken(response.data.accessToken);
+  //         // const decode = jwt_decode(response.data.accessToken);
+  //         // setName(decode.name);
+  //         // setExpire(decode.exp);
+  //       }
+  //       return config;
+  //     },
+  //     (error) => {
+  //       console.log("promise");
+  //       return Promise.reject(error);
+  //     }
+  //   );
+  // },
   methods: {
     onLogout(e) {
       this.$isLoading(true); // show loading screen
@@ -175,6 +180,7 @@ export default {
           .then((response) => {
             if (response.status === 204) {
               this.closeModal();
+              localStorage.removeItem("is_expanded");
               this.$cookies.remove("user");
               this.$router.push({ name: "login" });
             }
@@ -200,6 +206,58 @@ export default {
     },
     closeModal() {
       document.getElementById("close").click();
+    },
+    onCheckExpire() {
+      const currentDate = new Date();
+      const expireDateInt = new Date(this.expire);
+      // if (parseInt(this.expire) * 1000 < currentDate.getTime()) {
+      if (expireDateInt.getTime() < currentDate.getTime()) {
+        console.log("masuk expire");
+        this.onRefreshToken();
+      } else {
+        this.onLogout();
+      }
+    },
+    onRefreshToken() {
+      this.refreshToken = this.$cookies.get("user").refreshToken;
+      try {
+        axios
+          .post(`${import.meta.env.VITE_APP_BASE_API_URL}/account/refresh`, {
+            RefreshToken: this.refreshToken,
+          })
+          .then((response) => {
+            if (response.data.status) {
+              const user = response.data.data;
+
+              this.$cookies.remove("user");
+
+              this.$cookies.set("user", user, { httpOnly: true });
+              this.token = this.$cookies.get("user").token;
+              this.expire = this.$cookies.get("user").expireDate;
+              this.refreshToken = this.$cookies.get("user").refreshToken;
+
+              this.onLogout();
+
+              //this.$cookies.set("token", JSON.stringify(user.token), { httpOnly: true });
+              //this.toast.success(response.data.message);
+            }
+            // else {
+            //   this.toast.error(response.data.message);
+            // }
+          })
+          .catch((error) => {
+            if (error.response) {
+              this.toast.error(error.response);
+            } else if (error.request) {
+              this.toast.error("Error: Network Error");
+            } else {
+            }
+            //main.isLoading(false);
+          })
+          .finally(() => {
+            //this.$isLoading(false); // hide loading screen
+          });
+      } catch (error) {}
     },
   },
 };
