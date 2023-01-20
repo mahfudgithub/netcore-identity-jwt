@@ -204,8 +204,8 @@ Request :
 
 ```json 
 {
-    "MSG_CD" : "string, unique",
-    "MSG_TEXT" : "string"
+    "MsgCode" : "string, unique",
+    "MsgText" : "string"
 }
 ```
 
@@ -255,7 +255,7 @@ Request :
 
 ```json 
 {
-    "MSG_TEXT" : "string"
+    "MsgText" : "string"
 }
 ```
 

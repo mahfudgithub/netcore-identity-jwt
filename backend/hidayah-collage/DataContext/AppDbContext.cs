@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -21,10 +22,17 @@ namespace hidayah_collage.DataContext
         public DbSet<Message> Message { get; set; }
         public DbSet<SystemMaster> System { get; set; }
         public DbSet<RefreshToken> RefreshTokens { get; set; }
+        [NotMapped]
+        public DbSet<MessageListNotMapped> messageListNotMappeds { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<MessageListNotMapped>(builder =>
+            {
+                builder.HasNoKey();
+            });
+            
             base.OnModelCreating(modelBuilder);
         }
     }

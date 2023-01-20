@@ -66,12 +66,9 @@
   </aside>
 </template>
 
-<script>
+<script setup>
 import { ref } from "vue";
 import logoURL from "../assets/logo.png";
-import axios from "axios";
-import { AuthService } from "@/services/auth.service.js";
-import TokenService from "@/services/token.service.js";
 
 const is_expanded = ref(localStorage.getItem("is_expanded") === "true");
 
@@ -80,6 +77,14 @@ const ToggleMenu = () => {
   localStorage.setItem("is_expanded", is_expanded.value);
 };
 
+// const props = defineProps({
+//   msg: { type: String, default: "Hello!" },
+// });
+</script>
+<script>
+import axios from "axios";
+import { AuthService } from "@/services/auth.service.js";
+import TokenService from "@/services/token.service.js";
 export default {
   name: "sidebar",
   data() {
@@ -89,42 +94,46 @@ export default {
       refreshToken: "",
     };
   },
-  setup() {
-    //const interceptor = new AuthService();
-    const api = new AuthService();
+  // setup() {
+  //   //const interceptor = new AuthService();
+  //   const api = new AuthService();
 
-    //const axiosInterceptor = axios.create();
+  //   const isExpanded = ref(localStorage.getItem("is_expanded") === "true");
 
-    //const jwtDecode = VueJwtDecode();
+  //   //const is_expanded = ref(localStorage.getItem("is_expanded") === "true");
+  //   //const axiosInterceptor = axios.create();
 
-    // axiosInterceptor.interceptors.request.use(
-    //   (config) => {
-    //     const currentDate = new Date();
-    //     //if (parseInt(TokenService.getExpireToken()) * 1000 < currentDate.getTime()) {
-    //     //const user = api.refreshToken({ token: TokenService.getRefreshToken() });
-    //     //config.headers.Authorization = `Bearer ${user.token}`;
-    //     //}
-    //     // if (parseInt(expire) * 1000 < currentDate.getTime()){
-    //     //     const response = await axios.get('http://localhost:5000/token');
-    //     //     config.headers.Authorization = `Bearer ${response.data.accessToken}`;
-    //     //     setToken(response.data.accessToken);
-    //     //     // const decode = jwt_decode(response.data.accessToken);
-    //     //     // setName(decode.name);
-    //     //     // setExpire(decode.exp);
-    //     // }
-    //     return config;
-    //   },
-    //   (error) => {
-    //     return Promise.reject(error);
-    //   }
-    // );
+  //   //const jwtDecode = VueJwtDecode();
 
-    return { api };
-  },
+  //   // axiosInterceptor.interceptors.request.use(
+  //   //   (config) => {
+  //   //     const currentDate = new Date();
+  //   //     //if (parseInt(TokenService.getExpireToken()) * 1000 < currentDate.getTime()) {
+  //   //     //const user = api.refreshToken({ token: TokenService.getRefreshToken() });
+  //   //     //config.headers.Authorization = `Bearer ${user.token}`;
+  //   //     //}
+  //   //     // if (parseInt(expire) * 1000 < currentDate.getTime()){
+  //   //     //     const response = await axios.get('http://localhost:5000/token');
+  //   //     //     config.headers.Authorization = `Bearer ${response.data.accessToken}`;
+  //   //     //     setToken(response.data.accessToken);
+  //   //     //     // const decode = jwt_decode(response.data.accessToken);
+  //   //     //     // setName(decode.name);
+  //   //     //     // setExpire(decode.exp);
+  //   //     // }
+  //   //     return config;
+  //   //   },
+  //   //   (error) => {
+  //   //     return Promise.reject(error);
+  //   //   }
+  //   // );
+
+  //   return { api, isExpanded };
+  // },
   beforeMount() {
     this.token = this.$cookies.get("user").token;
     this.expire = this.$cookies.get("user").expireDate;
     this.refreshToken = this.$cookies.get("user").refreshToken;
+    //this.isExpanded = localStorage.getItem("is_expanded");
     // const currentDate = new Date();
     // if (parseInt(this.expire) * 1000 < currentDate.getTime()) {
     //   this.onCheckExpire();
@@ -210,6 +219,7 @@ export default {
     onCheckExpire() {
       const currentDate = new Date();
       const expireDateInt = new Date(this.expire);
+      this.refreshToken = this.$cookies.get("user").refreshToken;
       // if (parseInt(this.expire) * 1000 < currentDate.getTime()) {
       if (expireDateInt.getTime() < currentDate.getTime()) {
         console.log("masuk expire");
@@ -219,7 +229,6 @@ export default {
       }
     },
     onRefreshToken() {
-      this.refreshToken = this.$cookies.get("user").refreshToken;
       try {
         axios
           .post(`${import.meta.env.VITE_APP_BASE_API_URL}/account/refresh`, {
@@ -235,6 +244,10 @@ export default {
               this.token = this.$cookies.get("user").token;
               this.expire = this.$cookies.get("user").expireDate;
               this.refreshToken = this.$cookies.get("user").refreshToken;
+
+              //         setTimeout(function () {
+              //   v.toast.success("Check your email");
+              // }, 2600);
 
               this.onLogout();
 
@@ -261,17 +274,6 @@ export default {
     },
   },
 };
-
-// function onLogout(e) {
-//   console.log("keluar aja ");
-// }
-// onBeforeMount(() => {
-//   const token = this.$cookies.get("user").firstName;
-// });
-
-// onMounted(() => {
-//   console.log("monted");
-// });
 </script>
 
 <style lang="scss" scoped>

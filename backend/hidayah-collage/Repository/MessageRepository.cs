@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Sakura.AspNetCore;
+using Microsoft.Data.SqlClient;
 
 namespace hidayah_collage.Repository
 {
@@ -107,32 +108,46 @@ namespace hidayah_collage.Repository
             return webResponse;
         }
 
-        public async Task<WebResponse> GetListMessageAsync(PagingRequest pagingRequest)
+        public async Task<MessageListResponse> GetListMessageAsync(PagingRequest pagingRequest)
         {
-            WebResponse webResponse = new WebResponse();
+            MessageListResponse messageListResponse = new MessageListResponse();
 
             try
             {
-                var result = await _appDbContext.Message.ToListAsync();
+                var rowStart = 1;
+                var rowEnd = 5;
+                rowStart = (pagingRequest.Page - 1) * pagingRequest.Size + 1;
+                rowEnd = rowStart + pagingRequest.Size - 1;
+                var resultCount = await _appDbContext.Message.ToListAsync();
+                //Sql Raw
+                //var result = await _appDbContext.messageListNotMappeds.FromSqlRaw("select * from (SELECT ROW_NUMBER() over(order by [MSG_CD] asc ) [SEQ],[MSG_CD],[MSG_TEXT] FROM [dbo].[Message])tb where 1 = 1 and tb.SEQ between {0} and {1}", rowStart, rowEnd).ToListAsync();
+                //SP
+                SqlParameter pRowStart = new SqlParameter("@rowStart", rowStart);
+                SqlParameter pRowEnd = new SqlParameter("@rowEnd", rowEnd);
+                var result = await _appDbContext.messageListNotMappeds.FromSqlRaw("dbo.[GetMessageList] @rowStart,@rowEnd", pRowStart, pRowEnd).ToListAsync();
+                //var result = _appDbContext.Set<MessageListNotMapped>().FromSql("dbo.[GetMessageList] @rowStart,@rowEnd", pRowStart, pRowEnd).ToList();
+
                 if (result == null)
                 {
-                    webResponse.message = "No Data Found";
+                    messageListResponse.message = "No Data Found";
                 }
                 else
                 {
-                    webResponse.message = _getMessageRepository.GetMeessageText("SUC006");
+                    messageListResponse.message = _getMessageRepository.GetMeessageText("SUC006");
                 }
-                webResponse.status = true;
-                webResponse.data = result.ToPagedList(pagingRequest.Size,pagingRequest.Page);
+                messageListResponse.status = true;
+                messageListResponse.data.List = result.ToPagedList(pagingRequest.Size,pagingRequest.Page);
+                messageListResponse.data.List = result;
+                messageListResponse.data.total = resultCount.Count();
             }
             catch (Exception e)
             {
-                webResponse.status = false;
-                webResponse.message = e.Message.ToString();
-                webResponse.data = null;
+                messageListResponse.status = false;
+                messageListResponse.message = e.Message.ToString();
+                messageListResponse.data = null;
             }
 
-            return webResponse;
+            return messageListResponse;
         }
 
         public async Task<WebResponse> UpdateMessageAsync(string code, UpdateProductRequest updateProductRequest)

@@ -36,7 +36,7 @@
                     required
                   />
 
-                  <span class="input-group-text">
+                  <span class="input-group-text rounded">
                     <i class="bi" :class="[eyeIcon ? 'bi-eye-fill' : 'bi-eye-slash-fill']" @click="passwordType(passwordText)" id="togglePassword" style="font-size: 1.1rem; cursor: pointer" aria-hidden="true"></i>
                   </span>
                   <span class="mt-2 px-2"><RouterLink :to="{ name: 'forget' }" style="text-decoration: none">Forget ?</RouterLink></span>
@@ -132,6 +132,7 @@ export default {
               // store user details and jwt in local storage to keep user logged in between page refreshes
               //localStorage.setItem("user", JSON.stringify(user.refreshToken));
               this.$cookies.set("user", user, { httpOnly: true });
+              //localStorage.setItem("is_expanded", "false");
               //this.$cookies.set("name", user.firstName, { httpOnly: true });
               this.toast.success(response.data.message);
               // redirect to previous url or default to home page

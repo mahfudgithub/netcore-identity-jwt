@@ -13,7 +13,7 @@ namespace hidayah_collage.Interface
         Task<WebResponse> GetMessageById(int Id);
         Task<WebResponse> GetMessageByCode(string code);
         Task<WebResponse> CreateMessageAsync(CreateMessageRequest messageRequest);
-        Task<WebResponse> GetListMessageAsync(PagingRequest pagingRequest);
+        Task<MessageListResponse> GetListMessageAsync(PagingRequest pagingRequest);
         Task<WebResponse> UpdateMessageAsync(string code, UpdateProductRequest updateProductRequest);
         Task<WebResponse> DeleteMessageAsync(string code);
     }
