@@ -1,3 +1,6 @@
+import { useCookies } from "vue3-cookies";
+
+const { cookies } = useCookies();
 class TokenService {
   getLocalRefreshToken() {
     const user = JSON.parse(localStorage.getItem("user"));
@@ -20,11 +23,15 @@ class TokenService {
   }
 
   getExpireToken() {
-    return this.$cookies.get("user").expireDate;
+    return cookies.get("user").expireDate;
   }
 
   getRefreshToken() {
-    return this.$cookies.get("user").refreshToken;
+    return cookies.get("user").refreshToken;
+  }
+
+  getTokenAccess() {
+    return cookies.get("user").token;
   }
 
   setUser(user) {
@@ -38,11 +45,11 @@ class TokenService {
 
   removeCookie() {
     //this.$cookies.keys().forEach((cookie) => this.$cookies.remove(cookie));
-    this.$cookies.remove("user");
+    cookies.remove("user");
   }
 
   refreshCookie(user) {
-    this.$cookies.set("user", user);
+    cookies.set("user", user);
   }
 }
 

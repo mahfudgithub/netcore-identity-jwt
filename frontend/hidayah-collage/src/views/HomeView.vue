@@ -24,7 +24,7 @@
 <script>
 import axios from "axios";
 import Sidebar from "../components/Sidebar.vue";
-import VueJwtDecode from "vue-jwt-decode";
+//import VueJwtDecode from "vue-jwt-decode";
 
 export default {
   name: "home",
@@ -72,7 +72,8 @@ export default {
     // console.log(decode);
     this.name = this.$cookies.get("user").firstName;
     //const loginUser = this.$route.params.data;
-    //console.log(loginUser);
+    const token = sessionStorage.getItem("refreshToken");
+    console.log("ini token " + token);
     //this.refreshToken();
   },
   // mounted() {

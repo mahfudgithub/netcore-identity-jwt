@@ -27,6 +27,13 @@ const loadingOps = {
 </div>
 `,
 };
+app.directive("focus", {
+  mounted(el) {
+    // When the bound element is inserted into the DOM...
+    el.focus(); // Focus the element
+  },
+});
+
 app.use(VueCookies, { expire: "30d", sameSite: "Lax", secure: true });
 //app.use(VueAxios, axios);
 //app.provide("axios", app.config.globalProperties.axios); // provide 'axios'

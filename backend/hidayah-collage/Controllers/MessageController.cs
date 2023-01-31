@@ -116,7 +116,7 @@ namespace hidayah_collage.Controllers
                     }
                     else
                     {
-                        return BadRequest(result);
+                        return Ok(result);
                     }
                 }
                 catch (Exception ex)
@@ -142,7 +142,7 @@ namespace hidayah_collage.Controllers
                     }
                     else
                     {
-                        return BadRequest(result);
+                        return Ok(result);
                     }
                 }
                 catch (Exception ex)

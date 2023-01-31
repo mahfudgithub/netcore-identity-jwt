@@ -39,22 +39,52 @@
           </div>
           <div class="modal-body">
             <div class="container ms-3">
-              <div class="row mb-2">
-                <div class="col-sm-4">
-                  <label for="" class="col-form-label">Message Code</label>
+              <form ref="formSubmit" action="#" class="needs-validation" novalidate>
+                <div class="row mb-2">
+                  <div class="col-sm-4">
+                    <label for="" class="col-form-label">Message Code</label>
+                  </div>
+                  <div class="col-sm-7">
+                    <input
+                      autocomplete="off"
+                      type="text"
+                      ref="msgCode"
+                      id="msgCode"
+                      name="msgCode"
+                      style="text-transform: uppercase"
+                      class="form-control"
+                      :class="{ 'is-invalid': isSubmitted && !!errorForm.msgCode }"
+                      v-model="formAddEdit.msgCode"
+                      @blur="validate('msgCode')"
+                      @keypress="validate('msgCode')"
+                      :disabled="isDisabled"
+                      maxlength="10"
+                    />
+                    <div class="invalid-feedback">{{ errorForm.msgCode }}</div>
+                  </div>
                 </div>
-                <div class="col-sm-7">
-                  <input type="text" class="form-control" v-model="msgCode" :disabled="isDisabled" />
+                <div class="row">
+                  <div class="col-sm-4">
+                    <label for="" class="col-form-label">Message Desc</label>
+                  </div>
+                  <div class="col-sm-7">
+                    <textarea
+                      rows="3"
+                      ref="msgDesc"
+                      id="msgDesc"
+                      name="msgDesc"
+                      v-model="formAddEdit.msgDesc"
+                      type="text"
+                      class="form-control"
+                      :class="{ 'is-invalid': isSubmitted && !!errorForm.msgDesc }"
+                      @blur="validate('msgDesc')"
+                      @keypress="validate('msgDesc')"
+                      maxlength="100"
+                    />
+                    <div class="invalid-feedback">{{ errorForm.msgDesc }}</div>
+                  </div>
                 </div>
-              </div>
-              <div class="row">
-                <div class="col-sm-4">
-                  <label for="" class="col-form-label">Message Desc</label>
-                </div>
-                <div class="col-sm-7">
-                  <textarea rows="3" v-model="msgDesc" type="text" class="form-control" />
-                </div>
-              </div>
+              </form>
             </div>
           </div>
           <div class="modal-footer">
@@ -73,15 +103,13 @@
     <!-- <div class="container"> -->
     <div class="row g-3">
       <div class="col-md-3">
-        <input type="text" class="form-control" placeholder="search msg code" aria-label="First name" v-model="search" @keyup="onCheckSearchById" />
+        <input type="text" ref="search" class="form-control" placeholder="search msg code" aria-label="First name" v-model="search" @keyup="onCheckSearchById" />
       </div>
       <div class="col-md-3">
         <button type="button" class="btn btn-warning" @click="onClickClear">Clear</button>
       </div>
       <div class="col-md-6 d-grid justify-content-md-end">
-        <div class="btn">
-          <button type="button" class="btn btn-primary" @click="onClickModalAdd">Add</button>
-        </div>
+        <button type="button" class="btn btn-primary" @click="onClickModalAdd">Add</button>
       </div>
     </div>
     <div class="row">
@@ -139,35 +167,36 @@
         </table>
       </div>
       <nav aria-label="Page navigation example">
-        <div class="container">
-          <ul class="pagination justify-content-center">
-            <li class="page-item disabled">
-              <a class="page-link" href="#" aria-label="Previous">
-                <span aria-hidden="true">&laquo;</span>
-              </a>
-            </li>
-            <li class="page-item" v-for="index in totalPage" :key="index">
-              <a class="page-link" :class="`${active ? 'active' : ''}`" href="#" @click="searchPage(index)">{{ index }}</a>
-            </li>
-            <li class="page-item disabled">
-              <a class="page-link" href="#" aria-label="Next">
-                <span aria-hidden="true">&raquo;</span>
-              </a>
-            </li>
-            <!-- <li class="page-item">
-            <a class="page-link" href="#" aria-label="Previous">
-              <span aria-hidden="true">&laquo;</span>
-            </a>
-          </li>
-          <li class="page-item"><a class="page-link" href="#">1</a></li>
-          <li class="page-item"><a class="page-link" href="#">2</a></li>
-          <li class="page-item"><a class="page-link" href="#">3</a></li>
-          <li class="page-item">
-            <a class="page-link" href="#" aria-label="Next">
-              <span aria-hidden="true">&raquo;</span>
-            </a>
-          </li> -->
-          </ul>
+        <div class="row g-3">
+          <div class="col-sm-3"></div>
+          <div class="col-sm-6">
+            <ul class="pagination justify-content-center">
+              <li class="page-item" :class="`${activeFirst ? 'active' : ''}`">
+                <a class="page-link" href="#" aria-label="Previous" @click="searchPage('first')">
+                  <span aria-hidden="true">&laquo;</span>
+                </a>
+              </li>
+              <!-- <li class="page-item" :class="`${active ? 'active' : ''}`" v-for="index in totalPage" :key="index"> -->
+              <li class="page-item" :class="isActive.includes(index) && 'active'" v-for="index in totalPage" :key="index">
+                <a class="page-link" href="#" @click="searchPage(index)">{{ index }}</a>
+              </li>
+              <li class="page-item" :class="`${activeLast ? 'active' : ''}`">
+                <a class="page-link" href="#" aria-label="Next" @click="searchPage('last')">
+                  <span aria-hidden="true">&raquo;</span>
+                </a>
+              </li>
+            </ul>
+          </div>
+          <div class="col-sm-3">
+            <div class="form-group d-flex justify-content-md-end">
+              <label class="col-form-label" for="">Page Size : </label>
+              <select class="page-link form-select-sm ms-2" @change="onChangePageSize">
+                <option selected value="5">5</option>
+                <option value="10">10</option>
+                <option value="15">15</option>
+              </select>
+            </div>
+          </div>
         </div>
       </nav>
     </div>
@@ -176,31 +205,45 @@
   </main>
 </template>
 
-<!-- <script setup>
-const myModal = document.getElementById("onClickModalEdit").click();
-
-const myModal = document.getElementById("EditModal");
-const onEditModal = () => {
-  console.log("a");
-  myModal.addEventListener("shown.bs.modal", function () {
-    console.log("j");
-  });
-};
-
-</script> -->
 <script>
 import Sidebar from "../components/Sidebar.vue";
 import axios from "axios";
-//import { defineForm, field, isValidForm, toObject } from "vue-yup-form";
-//import * as Yup from "yup";
+import * as Yup from "yup";
 import { useToast } from "vue-toastification";
+import axiosinstance from "../services/axiosinstance";
+import TokenService from "@/services/token.service.js";
 
-// const generateFormModal = () => {
-//   const msgCode = field("", Yup.string().required("Message Code is required field").min(3, "Message Code must be at least 3 characters").max(10, "Message Code more than 10 characters"));
-//   const msgDesc = field("", Yup.string().required("Message Desc is required field").min(3, "Message Desc must be at least 3 characters").max(200, "Message Code more than 10 characters"));
-//   return defineForm({
-//     msgCode,
-//     msgDesc,
+const formSchemaValidation = Yup.object().shape({
+  msgCode: Yup.string().min(3, "Message Code must be at least 3 characters").max(10, "Message Code more than 10 characters").required("Message Code is required field"),
+  msgDesc: Yup.string().min(3, "Message Desc must be at least 3 characters").max(200, "Message Code more than 10 characters").required("Message Desc is required field"),
+});
+
+// const axiosInterceptor = axios.create({
+//   baseURL: `${import.meta.env.VITE_APP_BASE_API_URL}`,
+//   headers: {
+//     "Content-Type": "application/json",
+//   },
+// });
+
+// const interceptor = function () {
+//   axiosInterceptor.interceptors.request.use((config) => {
+//     const currentDate = new Date();
+//     const expireDateInt = new Date(this.$cookies.get("user").expireDate);
+//     //this.refreshToken = this.$cookies.get("user").refreshToken;
+//     // if (parseInt(this.expire) * 1000 < currentDate.getTime()) {
+//     if (expireDateInt.getTime() < currentDate.getTime()) {
+//       console.log("masuk expire");
+//       //this.onRefreshToken("onReady");
+//       //console.log("a " + this.validToken);
+//     } else {
+//       console.log("masuk tdk expire");
+//       //this.onSearch();
+//     }
+//     const token = this.$cookies.get("user").token;
+
+//     config.headers.Authorization = `Bearer ${token}`;
+
+//     return config;
 //   });
 // };
 
@@ -214,9 +257,13 @@ export default {
       token: "",
       //validToken: false,
       totalItems: 1,
+      isSubmitted: false,
       expire: "",
       refreshToken: "",
-      active: false,
+      active: true,
+      activeFirst: false,
+      activeLast: false,
+      isActive: [],
       search: "",
       action: "",
       pageSize: 5,
@@ -224,15 +271,22 @@ export default {
       currentPage: 1,
       totalPage: 1,
       messages: [],
-      msgCode: "",
-      msgDesc: "",
       isDisabled: false,
       screenModal: "",
+      formAddEdit: {
+        msgCode: "",
+        msgDesc: "",
+      },
+      errorForm: {
+        msgCode: "",
+        msgDesc: "",
+      },
     };
   },
   setup() {
     // Get toast interface
     const toast = useToast();
+
     //let messages = ref([]);
     //const form = generateFormModal();
 
@@ -244,12 +298,18 @@ export default {
     this.refreshToken = this.$cookies.get("user").refreshToken;
     this.onCheckExpire();
   },
-  mounted() {},
+  mounted() {
+    this.$refs.search.focus();
+  },
   methods: {
+    axiosInt: function () {
+      var v = this;
+      setTimeout(function () {
+        v.$nextTick(() => v.$refs.msgCode.focus());
+      }, 500);
+    },
     SetMessages(data) {
       this.messages = data;
-      //console.log(this.messages);
-      //console.log(Object.keys(this.messages).length);
     },
     onCheckExpire() {
       const currentDate = new Date();
@@ -266,6 +326,11 @@ export default {
     },
     onClickClear() {
       this.search = "";
+      this.onCheckExpire();
+    },
+    onChangePageSize(event) {
+      this.pageSize = event.target.value;
+      this.page = 1;
       this.onCheckExpire();
     },
     onRefreshToken(action) {
@@ -328,7 +393,7 @@ export default {
               this.SetMessages(listMessages);
               //console.log("total " + Math.ceil(response.data.data.total / 5));
               this.totalItems = response.data.data.total;
-              this.totalPage = Math.ceil(this.totalItems / 5);
+              this.totalPage = Math.ceil(this.totalItems / this.pageSize);
               //console.log(this.messages);
             } else {
               this.SetMessages([]);
@@ -389,9 +454,28 @@ export default {
     },
     searchPage(pg) {
       //console.log("this page " + pg);
-      this.search = "";
-      this.currentPage = pg;
+
       //this.active = true;
+      this.isActive = [];
+      this.activeFirst = false;
+      this.activeLast = false;
+      if (this.isActive.includes(pg)) {
+        this.isActive = this.isActive.filter((s) => s !== pg);
+      } else {
+        this.isActive.push(pg);
+      }
+
+      this.search = "";
+      if (pg == "first") {
+        this.currentPage = 1;
+        this.activeFirst = true;
+      } else if (pg == "last") {
+        this.currentPage = this.totalPage;
+        this.activeLast = true;
+      } else {
+        this.currentPage = pg;
+      }
+
       const currentDate = new Date();
       const expireDateInt = new Date(this.expire);
       this.refreshToken = this.$cookies.get("user").refreshToken;
@@ -400,26 +484,58 @@ export default {
         this.onRefreshToken("onByPage");
         //console.log("a " + this.validToken);
       } else {
-        this.page = pg;
+        if (pg == "first") {
+          this.page = 1;
+        } else if (pg == "last") {
+          this.page = this.totalPage;
+        } else {
+          this.page = pg;
+        }
         this.onSearch();
       }
     },
     onClickModalEdit(msgCode, msgDesc) {
       //console.log("ab " + msgCode);
       this.screenModal = "Edit";
-      this.msgCode = msgCode;
-      this.msgDesc = msgDesc;
+      this.formAddEdit.msgCode = msgCode;
+      this.formAddEdit.msgDesc = msgDesc;
       this.isDisabled = true;
+      this.isSubmitted = false;
       document.getElementById("clickModalEdit").click();
+      this.onFocusMsgDesc();
     },
     onClickModalAdd() {
+      //this.$refs.msgCode.focus();
       this.screenModal = "Add";
       this.isDisabled = false;
-      this.msgCode = "";
-      this.msgDesc = "";
+      this.formAddEdit.msgCode = "";
+      this.formAddEdit.msgDesc = "";
+      this.isSubmitted = false;
       document.getElementById("clickModalEdit").click();
+      this.onFocusModal();
     },
-    onBeforeSave() {
+    onFocusModal: function () {
+      var v = this;
+      setTimeout(function () {
+        v.$nextTick(() => v.$refs.msgCode.focus());
+      }, 500);
+    },
+    onFocusMsgDesc: function () {
+      var v = this;
+      setTimeout(function () {
+        v.$nextTick(() => v.$refs.msgDesc.focus());
+      }, 500);
+    },
+    validate(field) {
+      formSchemaValidation
+        .validateAt(field, this.formAddEdit)
+        .then(() => (this.errorForm[field] = ""))
+        .catch((err) => {
+          this.errorForm[err.path] = err.message;
+        });
+    },
+    onBeforeSave(e) {
+      e.preventDefault();
       const currentDate = new Date();
       const expireDateInt = new Date(this.expire);
       this.refreshToken = this.$cookies.get("user").refreshToken;
@@ -432,91 +548,113 @@ export default {
       }
     },
     onSave() {
+      this.isSubmitted = true;
       if (this.screenModal == "Add") {
-        //console.log("on add");
-        // if (!isValidForm(this.form)) {
-        //   //this.$isLoading(false);
-        //   //console.log(JSON.stringify(toObject(this.form), null, 2));
-        //   return;
-        // }
-        this.$isLoading(true); // show loading screen
-        const data = {
-          MsgCode: this.msgCode,
-          MsgText: this.msgDesc,
-        };
-        try {
-          axios
-            .post(`${import.meta.env.VITE_APP_BASE_API_URL}/message`, data, {
-              headers: {
-                Authorization: `Bearer ${this.token}`,
-              },
-            })
-            .then((response) => {
-              if (response.data.status) {
-                this.toast.success(response.data.message);
-              } else {
-                this.toast.error(response.data.message);
-              }
-            })
-            .catch((error) => {
-              if (error.response) {
-                this.toast.error(error.response.data.title);
-              } else if (error.request) {
-                this.toast.error("Error: Network Error");
-              } else {
-              }
-            })
-            .finally(() => {
+        formSchemaValidation
+          .validate(this.formAddEdit, { abortEarly: false })
+          .then(() => {
+            this.$isLoading(true); // show loading screen
+            const data = {
+              MsgCode: this.formAddEdit.msgCode.toUpperCase(),
+              MsgText: this.formAddEdit.msgDesc,
+            };
+            try {
+              axios
+                .post(`${import.meta.env.VITE_APP_BASE_API_URL}/message`, data, {
+                  headers: {
+                    Authorization: `Bearer ${this.token}`,
+                  },
+                })
+                .then((response) => {
+                  if (response.data.status) {
+                    this.toast.success(response.data.message);
+                  } else {
+                    this.toast.error(response.data.message);
+                  }
+                })
+                .catch((error) => {
+                  if (error.response) {
+                    this.toast.error(error.response.data.title);
+                  } else if (error.request) {
+                    this.toast.error("Error: Network Error");
+                  } else {
+                  }
+                })
+                .finally(() => {
+                  this.$isLoading(false); // hide loading screen
+                  this.onCloseModal();
+                  this.onCheckExpire();
+                  this.onResetForm();
+                });
+            } catch (error) {
+              this.toast.error(error.message);
               this.$isLoading(false); // hide loading screen
-              this.onCloseModal();
-              this.onCheckExpire();
+            }
+          })
+          .catch((err) => {
+            err.inner.forEach((error) => {
+              this.errorForm = { ...this.errorForm, [error.path]: error.message };
+              //console.log("err " + this.errorForm.msgCode);
             });
-        } catch (error) {
-          this.toast.error(error.message);
-          this.$isLoading(false); // hide loading screen
-        }
+            //console.log("err " + this.errorForm.msgCode);
+          });
       } else if (this.screenModal == "Edit") {
-        //console.log("on edit");
-        this.$isLoading(true); // show loading screen
-        const data = {
-          MsgText: this.msgDesc,
-        };
-        try {
-          axios
-            .put(`${import.meta.env.VITE_APP_BASE_API_URL}/message/${this.msgCode}`, data, {
-              headers: {
-                Authorization: `Bearer ${this.token}`,
-              },
-            })
-            .then((response) => {
-              if (response.data.status) {
-                this.toast.success(response.data.message);
-              } else {
-                this.toast.error(response.data.message);
-              }
-            })
-            .catch((error) => {
-              if (error.response) {
-                this.toast.error(error.response.data.title);
-              } else if (error.request) {
-                this.toast.error("Error: Network Error");
-              } else {
-              }
-            })
-            .finally(() => {
+        formSchemaValidation
+          .validate(this.formAddEdit, { abortEarly: false })
+          .then(() => {
+            this.$isLoading(true); // show loading screen
+            const data = {
+              MsgText: this.formAddEdit.msgDesc,
+            };
+            try {
+              axios
+                .put(`${import.meta.env.VITE_APP_BASE_API_URL}/message/${this.formAddEdit.msgCode}`, data, {
+                  headers: {
+                    Authorization: `Bearer ${this.token}`,
+                  },
+                })
+                .then((response) => {
+                  if (response.data.status) {
+                    this.toast.success(response.data.message);
+                  } else {
+                    this.toast.error(response.data.message);
+                  }
+                })
+                .catch((error) => {
+                  if (error.response) {
+                    this.toast.error(error.response.data.title);
+                  } else if (error.request) {
+                    this.toast.error("Error: Network Error");
+                  } else {
+                  }
+                })
+                .finally(() => {
+                  this.$isLoading(false); // hide loading screen
+                  this.onCloseModal();
+                  this.onCheckExpire();
+                  this.onResetForm();
+                });
+            } catch (error) {
+              this.toast.error(error.message);
               this.$isLoading(false); // hide loading screen
-              this.onCloseModal();
-              this.onCheckExpire();
+            }
+          })
+          .catch((err) => {
+            err.inner.forEach((error) => {
+              this.errorForm = { ...this.errorForm, [error.path]: error.message };
             });
-        } catch (error) {
-          this.toast.error(error.message);
-          this.$isLoading(false); // hide loading screen
-        }
-        //this.onCloseModal();
+          });
       } else {
         alert("no have screen");
         this.onCloseModal();
       }
+    },
+    onResetForm() {
+      var self = this; //you need this because *this* will refer to Object.keys below`
+
+      setTimeout(function () {
+        self.$refs.formSubmit.reset();
+      }, 500);
     },
     onCloseModal() {
       document.getElementById("closeModal").click();
@@ -525,21 +663,49 @@ export default {
       document.getElementById("closeDelete").click();
     },
     onClickModalDelete(msgCode) {
-      this.msgCode = msgCode;
+      this.formAddEdit.msgCode = msgCode;
       this.isDisabled = true;
       document.getElementById("clickModalDelete").click();
     },
     onCheckDelete() {
-      const currentDate = new Date();
-      const expireDateInt = new Date(this.expire);
-      this.refreshToken = this.$cookies.get("user").refreshToken;
-      if (expireDateInt.getTime() < currentDate.getTime()) {
-        //console.log("masuk expire");
-        this.onRefreshToken("onDeleteData");
-        //console.log("a " + this.validToken);
-      } else {
-        this.onModalDeleteData();
-      }
+      //interceptor.get()
+      //console.log("delete " + `Bearer ${TokenService.getTokenAccess()}`);
+      axiosinstance
+        .delete(`/message/${this.formAddEdit.msgCode}`)
+        .then((response) => {
+          if (response.data.status) {
+            this.toast.success(response.data.message);
+          } else {
+            this.toast.error(response.data.message);
+          }
+        })
+        .catch((error) => {
+          if (error.response) {
+            this.toast.error(error.response.data.title);
+          } else if (error.request) {
+            this.toast.error("Error: Network Error");
+          } else {
+            console.log("catch");
+          }
+        })
+        .finally(() => {
+          this.$isLoading(false); // hide loading screen
+          this.onCloseModalDelete();
+          // this.page = 1;
+          // this.onCheckExpire();
+          // this.isActive = [];
+          // this.activeFirst = false;
+          // this.activeLast = false;
+        });
+
+      // const currentDate = new Date();
+      // const expireDateInt = new Date(this.expire);
+      // this.refreshToken = this.$cookies.get("user").refreshToken;
+      // if (expireDateInt.getTime() < currentDate.getTime()) {
+      //   this.onRefreshToken("onDeleteData");
+      // } else {
+      //   this.onModalDeleteData();
+      // }
     },
     onModalDeleteData() {
       //console.log("on delete");
@@ -547,9 +713,9 @@ export default {
 
       try {
         axios
-          .delete(`${import.meta.env.VITE_APP_BASE_API_URL}/message/${this.msgCode}`, {
+          .delete(`${import.meta.env.VITE_APP_BASE_API_URL}/message/${this.formAddEdit.msgCode}`, {
             headers: {
-              Authorization: `Bearer ${this.token}`,
+              Authorization: `Bearer ${TokenService.getTokenAccess()}`,
             },
           })
           .then((response) => {
@@ -570,7 +736,11 @@ export default {
           .finally(() => {
             this.$isLoading(false); // hide loading screen
             this.onCloseModalDelete();
+            this.page = 1;
             this.onCheckExpire();
+            this.isActive = [];
+            this.activeFirst = false;
+            this.activeLast = false;
           });
       } catch (error) {
         this.toast.error(error.message);

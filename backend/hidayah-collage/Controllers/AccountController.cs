@@ -62,7 +62,7 @@ namespace hidayah_collage.Controllers
                     if (result.status)
                     {
                         string token = (string)result.data.GetType().GetProperty("RefreshToken").GetValue(result.data);
-                        Response.Cookies.Append("X-Access-Token", token, new CookieOptions() { HttpOnly = true, SameSite = SameSiteMode.Strict,MaxAge= TimeSpan.FromDays(2)});
+                        Response.Cookies.Append("refreshToken", token, new CookieOptions() { HttpOnly = true, SameSite = SameSiteMode.Strict,MaxAge= TimeSpan.FromDays(2)});
                         return Ok(result);
                     }
                     else
@@ -185,7 +185,7 @@ namespace hidayah_collage.Controllers
                 var result = await _account.Logout(rawUserId);
                 if (result.status)
                 {                    
-                    Response.Cookies.Delete("X-Access-Token");
+                    Response.Cookies.Delete("refreshToken");
                     return NoContent();
                 }
                 else

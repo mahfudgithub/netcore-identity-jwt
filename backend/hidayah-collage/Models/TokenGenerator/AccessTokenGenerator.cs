@@ -27,7 +27,7 @@ namespace hidayah_collage.Models.TokenGenerator
             };
 
             //DateTime expirationTime = DateTime.UtcNow.AddMinutes(_configuration["JWT:AccessTokenExpirationMinutes"]);
-            DateTime expirationTime = DateTime.Now.AddSeconds(60);
+            DateTime expirationTime = DateTime.Now.AddSeconds(15);
             string token = _tokenGenerator.GenerateToken(
                 _configuration["JWT:Secret"],
                 _configuration["JWT:ValidIssuer"],

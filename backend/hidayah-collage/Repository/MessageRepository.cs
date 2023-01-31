@@ -10,6 +10,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Sakura.AspNetCore;
 using Microsoft.Data.SqlClient;
+using System.Data;
 
 namespace hidayah_collage.Repository
 {
@@ -101,7 +102,7 @@ namespace hidayah_collage.Repository
                 var result = await _appDbContext.SaveChangesAsync();
 
                 webResponse.status = true;
-                webResponse.message = "Success Insert Data ";
+                webResponse.message = _getMessageRepository.GetMeessageText("SUC010");
                 webResponse.data = data;
             }
 
@@ -118,15 +119,25 @@ namespace hidayah_collage.Repository
                 var rowEnd = 5;
                 rowStart = (pagingRequest.Page - 1) * pagingRequest.Size + 1;
                 rowEnd = rowStart + pagingRequest.Size - 1;
-                var resultCount = await _appDbContext.Message.ToListAsync();
+                var resultCount = _appDbContext.Message.Count();
                 //Sql Raw
                 //var result = await _appDbContext.messageListNotMappeds.FromSqlRaw("select * from (SELECT ROW_NUMBER() over(order by [MSG_CD] asc ) [SEQ],[MSG_CD],[MSG_TEXT] FROM [dbo].[Message])tb where 1 = 1 and tb.SEQ between {0} and {1}", rowStart, rowEnd).ToListAsync();
                 //SP
                 SqlParameter pRowStart = new SqlParameter("@rowStart", rowStart);
                 SqlParameter pRowEnd = new SqlParameter("@rowEnd", rowEnd);
                 var result = await _appDbContext.messageListNotMappeds.FromSqlRaw("dbo.[GetMessageList] @rowStart,@rowEnd", pRowStart, pRowEnd).ToListAsync();
+                //var result1 = await _appDbContext.Set<MessageListNotMapped>().FromSqlRaw("Exec dbo.GetMessageList @rowStart,@rowEnd",  pRowStart, pRowEnd ).ToArrayAsync();
                 //var result = _appDbContext.Set<MessageListNotMapped>().FromSql("dbo.[GetMessageList] @rowStart,@rowEnd", pRowStart, pRowEnd).ToList();
-
+                var pRowStart1 = new SqlParameter("@rowStart", rowStart);
+                var pRowEnd2 = new SqlParameter("@rowEnd", rowEnd);
+         
+                //In EntityFrameworkCore we have two methods for executing Stored Procedures:
+                //1.FromSqlRaw() – used to run query statements that return records from the database
+                //2. ExecuteSqlRaw() / ExecuteSqlRawAsync() – executes a command that can modify data on the database(typically DML commands like INSERT, UPDATE or DELETE)
+                //var userIdParam = new SqlParameter("@Id", SqlDbType.Int);
+                //userIdParam.Direction = ParameterDirection.Output;
+                //this is exec for DML (Insert ,update,delete)
+                //var result1 = await _appDbContext.Database.ExecuteSqlRawAsync("exec dbo.[GetMessageList] @rowStart,@rowEnd, @Id out", parameters: new[] { pRowStart1, pRowEnd2 , userIdParam });
                 if (result == null)
                 {
                     messageListResponse.message = "No Data Found";
@@ -138,7 +149,7 @@ namespace hidayah_collage.Repository
                 messageListResponse.status = true;
                 messageListResponse.data.List = result.ToPagedList(pagingRequest.Size,pagingRequest.Page);
                 messageListResponse.data.List = result;
-                messageListResponse.data.total = resultCount.Count();
+                messageListResponse.data.total = resultCount;
             }
             catch (Exception e)
             {
@@ -182,7 +193,7 @@ namespace hidayah_collage.Repository
             _appDbContext.Message.Update(data);
             var result = await _appDbContext.SaveChangesAsync();
             webResponse.status = true;
-            webResponse.message = "Success Update Data ";
+            webResponse.message = _getMessageRepository.GetMeessageText("SUC008");
             webResponse.data = data;
 
             return webResponse;
@@ -209,7 +220,7 @@ namespace hidayah_collage.Repository
                 var result = await _appDbContext.SaveChangesAsync();
 
                 webResponse.status = true;
-                webResponse.message = "Success Delete Data";
+                webResponse.message = _getMessageRepository.GetMeessageText("SUC009");
                 webResponse.data = null;
             }
 

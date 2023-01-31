@@ -62,37 +62,37 @@ export class AuthService {
       });
   }
 
-  refreshToken({ token }) {
-    return (api.post("account/refresh"),
-    {
-      RefreshToken: token,
-    }).then((response) => {
-      if (response.data.status) {
-        const user = response.data.data;
-        TokenService.removeCookie();
-        TokenService.refreshCookie(user);
-      }
+  refreshToken({ RefreshToken }) {
+    return api.post("/account/refresh", {
+      RefreshToken: RefreshToken,
     });
+    // .then((response) => {
+    //   if (response.data.status) {
+    //     const user = response.data.data;
+    //     TokenService.removeCookie();
+    //     TokenService.refreshCookie(user);
+    //   }
+    // });
   }
 
-  intercepors() {
-    api.interceptors.request.use(
-      (config) => {
-        console.log("kepanggil");
-        const currentDate = new Date();
-        if (parseInt(TokenService.getExpireToken()) * 1000 < currentDate.getTime()) {
-          const user = this.refreshToken({ token: TokenService.getRefreshToken() });
-          config.headers.Authorization = `Bearer ${user.token}`;
-          console.log("kepanggil lagi");
-        }
-        return config;
-      },
-      (error) => {
-        console.log("error");
-        return Promise.reject(error);
-      }
-    );
-  }
+  // intercepors() {
+  //   api.interceptors.request.use(
+  //     (config) => {
+  //       console.log("kepanggil");
+  //       const currentDate = new Date();
+  //       if (parseInt(TokenService.getExpireToken()) * 1000 < currentDate.getTime()) {
+  //         const user = this.refreshToken({ token: TokenService.getRefreshToken() });
+  //         config.headers.Authorization = `Bearer ${user.token}`;
+  //         console.log("kepanggil lagi");
+  //       }
+  //       return config;
+  //     },
+  //     (error) => {
+  //       console.log("error");
+  //       return Promise.reject(error);
+  //     }
+  //   );
+  // }
 }
 
 //export default { AuthService };
