@@ -218,35 +218,6 @@ const formSchemaValidation = Yup.object().shape({
   msgDesc: Yup.string().min(3, "Message Desc must be at least 3 characters").max(200, "Message Code more than 10 characters").required("Message Desc is required field"),
 });
 
-// const axiosInterceptor = axios.create({
-//   baseURL: `${import.meta.env.VITE_APP_BASE_API_URL}`,
-//   headers: {
-//     "Content-Type": "application/json",
-//   },
-// });
-
-// const interceptor = function () {
-//   axiosInterceptor.interceptors.request.use((config) => {
-//     const currentDate = new Date();
-//     const expireDateInt = new Date(this.$cookies.get("user").expireDate);
-//     //this.refreshToken = this.$cookies.get("user").refreshToken;
-//     // if (parseInt(this.expire) * 1000 < currentDate.getTime()) {
-//     if (expireDateInt.getTime() < currentDate.getTime()) {
-//       console.log("masuk expire");
-//       //this.onRefreshToken("onReady");
-//       //console.log("a " + this.validToken);
-//     } else {
-//       console.log("masuk tdk expire");
-//       //this.onSearch();
-//     }
-//     const token = this.$cookies.get("user").token;
-
-//     config.headers.Authorization = `Bearer ${token}`;
-
-//     return config;
-//   });
-// };
-
 export default {
   name: "message",
   components: {
@@ -668,7 +639,6 @@ export default {
       document.getElementById("clickModalDelete").click();
     },
     onCheckDelete() {
-      //interceptor.get()
       //console.log("delete " + `Bearer ${TokenService.getTokenAccess()}`);
       axiosinstance
         .delete(`/message/${this.formAddEdit.msgCode}`)
@@ -691,11 +661,11 @@ export default {
         .finally(() => {
           this.$isLoading(false); // hide loading screen
           this.onCloseModalDelete();
-          // this.page = 1;
-          // this.onCheckExpire();
-          // this.isActive = [];
-          // this.activeFirst = false;
-          // this.activeLast = false;
+          this.page = 1;
+          this.onCheckExpire();
+          this.isActive = [];
+          this.activeFirst = false;
+          this.activeLast = false;
         });
 
       // const currentDate = new Date();

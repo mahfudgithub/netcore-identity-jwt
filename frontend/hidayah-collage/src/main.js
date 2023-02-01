@@ -10,7 +10,6 @@ import "vue-toastification/dist/index.css";
 import Loading from "vue3-loading-screen";
 import VueCookies from "vue3-cookies";
 // import VueAxios from "vue-axios";
-// import axios from "./services/axiosInterceptors.js";
 
 const app = createApp(App);
 const options = {

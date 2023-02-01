@@ -74,25 +74,6 @@ export class AuthService {
     //   }
     // });
   }
-
-  // intercepors() {
-  //   api.interceptors.request.use(
-  //     (config) => {
-  //       console.log("kepanggil");
-  //       const currentDate = new Date();
-  //       if (parseInt(TokenService.getExpireToken()) * 1000 < currentDate.getTime()) {
-  //         const user = this.refreshToken({ token: TokenService.getRefreshToken() });
-  //         config.headers.Authorization = `Bearer ${user.token}`;
-  //         console.log("kepanggil lagi");
-  //       }
-  //       return config;
-  //     },
-  //     (error) => {
-  //       console.log("error");
-  //       return Promise.reject(error);
-  //     }
-  //   );
-  // }
 }
 
 //export default { AuthService };

@@ -42,30 +42,7 @@ export default {
   // created() {
   //   console.log(this.$route.fullPath);
   // },
-  setup() {
-    const axiosInterceptor = axios.create();
-
-    //const jwtDecode = VueJwtDecode();
-
-    axiosInterceptor.interceptors.request.use(
-      async (config) => {
-        const currentDate = new Date();
-        // if (parseInt(expire) * 1000 < currentDate.getTime()){
-        //     const response = await axios.get('http://localhost:5000/token');
-        //     config.headers.Authorization = `Bearer ${response.data.accessToken}`;
-        //     setToken(response.data.accessToken);
-        //     // const decode = jwt_decode(response.data.accessToken);
-        //     // setName(decode.name);
-        //     // setExpire(decode.exp);
-        // }
-        return config;
-      },
-      (error) => {
-        return Promise.reject(error);
-      }
-    );
-    //return { jwtDecode };
-  },
+  setup() {},
   beforeMount() {
     //console.log("token " + this.$cookies.get("refreshToken"));
     //const decode = VueJwtDecode.decode(this.$cookies.get("refreshToken"));

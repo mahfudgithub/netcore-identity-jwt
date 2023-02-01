@@ -94,92 +94,17 @@ export default {
       refreshToken: "",
     };
   },
-  // setup() {
-  //   //const interceptor = new AuthService();
-  //   const api = new AuthService();
-
-  //   const isExpanded = ref(localStorage.getItem("is_expanded") === "true");
-
-  //   //const is_expanded = ref(localStorage.getItem("is_expanded") === "true");
-  //   //const axiosInterceptor = axios.create();
-
-  //   //const jwtDecode = VueJwtDecode();
-
-  //   // axiosInterceptor.interceptors.request.use(
-  //   //   (config) => {
-  //   //     const currentDate = new Date();
-  //   //     //if (parseInt(TokenService.getExpireToken()) * 1000 < currentDate.getTime()) {
-  //   //     //const user = api.refreshToken({ token: TokenService.getRefreshToken() });
-  //   //     //config.headers.Authorization = `Bearer ${user.token}`;
-  //   //     //}
-  //   //     // if (parseInt(expire) * 1000 < currentDate.getTime()){
-  //   //     //     const response = await axios.get('http://localhost:5000/token');
-  //   //     //     config.headers.Authorization = `Bearer ${response.data.accessToken}`;
-  //   //     //     setToken(response.data.accessToken);
-  //   //     //     // const decode = jwt_decode(response.data.accessToken);
-  //   //     //     // setName(decode.name);
-  //   //     //     // setExpire(decode.exp);
-  //   //     // }
-  //   //     return config;
-  //   //   },
-  //   //   (error) => {
-  //   //     return Promise.reject(error);
-  //   //   }
-  //   // );
-
-  //   return { api, isExpanded };
-  // },
   beforeMount() {
     this.token = this.$cookies.get("user").token;
     this.expire = this.$cookies.get("user").expireDate;
     this.refreshToken = this.$cookies.get("user").refreshToken;
-    //this.isExpanded = localStorage.getItem("is_expanded");
-    // const currentDate = new Date();
-    // if (parseInt(this.expire) * 1000 < currentDate.getTime()) {
-    //   this.onCheckExpire();
-    //   console.log("a");
-    // }
-    //this.interceptor.intercepors();
   },
-  // created() {
-  //   const axiosInterceptor = axios.create({
-  //     baseURL: `${import.meta.env.VITE_APP_BASE_API_URL}`,
-  //     headers: {
-  //       "Content-Type": "application/json",
-  //     },
-  //   });
-
-  //   axiosInterceptor.interceptors.request.use(
-  //     async (config) => {
-  //       const currentDate = new Date();
-  //       console.log("exp " + this.expire);
-  //       if (parseInt(TokenService.getExpireToken()) * 1000 < currentDate.getTime()) {
-  //         console.log("inrter");
-  //         const user = AuthService.refreshToken({ token: TokenService.getRefreshToken() });
-  //         // const response = await axios.get('http://localhost:5000/token');
-  //         // config.headers.Authorization = `Bearer ${response.data.accessToken}`;
-  //         // setToken(response.data.accessToken);
-  //         // const decode = jwt_decode(response.data.accessToken);
-  //         // setName(decode.name);
-  //         // setExpire(decode.exp);
-  //       }
-  //       return config;
-  //     },
-  //     (error) => {
-  //       console.log("promise");
-  //       return Promise.reject(error);
-  //     }
-  //   );
-  // },
   methods: {
     onLogout(e) {
       this.$isLoading(true); // show loading screen
       try {
         //this.api
         axios
-          //this.axiosInterceptor
-          //this.interceptor
-          //.intercepors
           .delete(`${import.meta.env.VITE_APP_BASE_API_URL}/account/logout`, {
             headers: {
               Authorization: `Bearer ${this.token}`,
