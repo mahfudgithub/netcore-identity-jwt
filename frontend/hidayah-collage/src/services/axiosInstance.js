@@ -11,22 +11,27 @@ const axiosinstance = axios.create({
   },
 });
 
-axiosinstance.interceptors.request.use(async (config) => {
-  config.headers.Authorization = `Bearer ${TokenService.getTokenAccess()}`;
+axiosinstance.interceptors.request.use(
+  async (config) => {
+    config.headers.Authorization = `Bearer ${TokenService.getTokenAccess()}`;
 
-  const currentDate = new Date();
-  const expireDateInt = new Date(TokenService.getExpireToken());
-  const isExpired = expireDateInt.getTime() < currentDate.getTime();
+    const currentDate = new Date();
+    const expireDateInt = new Date(TokenService.getExpireToken());
+    const isExpired = expireDateInt.getTime() < currentDate.getTime();
 
-  if (!isExpired) return config;
+    if (!isExpired) return config;
 
-  const response = await api.refreshToken({
-    RefreshToken: TokenService.getRefreshToken(),
-  });
-  TokenService.refreshCookie(response.data.data);
-  config.headers.Authorization = `Bearer ${response.data.data.token}`;
-  return config;
-});
+    const response = await api.refreshToken({
+      RefreshToken: TokenService.getRefreshToken(),
+    });
+    TokenService.refreshCookie(response.data.data);
+    config.headers.Authorization = `Bearer ${response.data.data.token}`;
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
 
 // axiosinstance.interceptors.request.use(
 //   (config) => {

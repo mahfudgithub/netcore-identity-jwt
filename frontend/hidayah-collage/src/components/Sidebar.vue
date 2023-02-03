@@ -12,7 +12,7 @@
         </div>
         <div class="modal-footer btn-group" role="group">
           <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal" id="close">No</button>
-          <button type="button" class="btn btn-danger btn-sm" @click="onCheckExpire">Yes</button>
+          <button type="button" class="btn btn-danger btn-sm" @click="onLogout">Yes</button>
         </div>
       </div>
     </div>
@@ -76,15 +76,10 @@ const ToggleMenu = () => {
   is_expanded.value = !is_expanded.value;
   localStorage.setItem("is_expanded", is_expanded.value);
 };
-
-// const props = defineProps({
-//   msg: { type: String, default: "Hello!" },
-// });
 </script>
 <script>
-import axios from "axios";
-import { AuthService } from "@/services/auth.service.js";
-import TokenService from "@/services/token.service.js";
+import axiosinstance from "../services/axiosinstance";
+
 export default {
   name: "sidebar",
   data() {
@@ -95,26 +90,24 @@ export default {
     };
   },
   beforeMount() {
-    this.token = this.$cookies.get("user").token;
-    this.expire = this.$cookies.get("user").expireDate;
-    this.refreshToken = this.$cookies.get("user").refreshToken;
+    // this.token = this.$cookies.get("user").token;
+    // this.expire = this.$cookies.get("user").expireDate;
+    // this.refreshToken = this.$cookies.get("user").refreshToken;
   },
   methods: {
-    onLogout(e) {
+    onLogout() {
       this.$isLoading(true); // show loading screen
       try {
         //this.api
-        axios
-          .delete(`${import.meta.env.VITE_APP_BASE_API_URL}/account/logout`, {
-            headers: {
-              Authorization: `Bearer ${this.token}`,
-            },
+        //axios
+        axiosinstance
+          .delete(`/account/logout`, {
             withCredentials: true,
           })
           .then((response) => {
             if (response.status === 204) {
               this.closeModal();
-              localStorage.removeItem("is_expanded");
+              //localStorage.removeItem("is_expanded");
               this.$cookies.remove("user");
               this.$router.push({ name: "login" });
             }
@@ -141,62 +134,51 @@ export default {
     closeModal() {
       document.getElementById("close").click();
     },
-    onCheckExpire() {
-      const currentDate = new Date();
-      const expireDateInt = new Date(this.expire);
-      this.refreshToken = this.$cookies.get("user").refreshToken;
-      // if (parseInt(this.expire) * 1000 < currentDate.getTime()) {
-      if (expireDateInt.getTime() < currentDate.getTime()) {
-        console.log("masuk expire");
-        this.onRefreshToken();
-      } else {
-        this.onLogout();
-      }
-    },
-    onRefreshToken() {
-      try {
-        axios
-          .post(`${import.meta.env.VITE_APP_BASE_API_URL}/account/refresh`, {
-            RefreshToken: this.refreshToken,
-          })
-          .then((response) => {
-            if (response.data.status) {
-              const user = response.data.data;
+    // onCheckExpire() {
+    //   const currentDate = new Date();
+    //   const expireDateInt = new Date(this.expire);
+    //   this.refreshToken = this.$cookies.get("user").refreshToken;
+    //   if (expireDateInt.getTime() < currentDate.getTime()) {
+    //     console.log("masuk expire");
+    //     this.onRefreshToken();
+    //   } else {
+    //     this.onLogout();
+    //   }
+    // },
+    // onRefreshToken() {
+    //   try {
+    //     axios
+    //       .post(`${import.meta.env.VITE_APP_BASE_API_URL}/account/refresh`, {
+    //         RefreshToken: this.refreshToken,
+    //       })
+    //       .then((response) => {
+    //         if (response.data.status) {
+    //           const user = response.data.data;
 
-              this.$cookies.remove("user");
+    //           this.$cookies.remove("user");
 
-              this.$cookies.set("user", user, { httpOnly: true });
-              this.token = this.$cookies.get("user").token;
-              this.expire = this.$cookies.get("user").expireDate;
-              this.refreshToken = this.$cookies.get("user").refreshToken;
+    //           this.$cookies.set("user", user, { httpOnly: true });
+    //           this.token = this.$cookies.get("user").token;
+    //           this.expire = this.$cookies.get("user").expireDate;
+    //           this.refreshToken = this.$cookies.get("user").refreshToken;
 
-              //         setTimeout(function () {
-              //   v.toast.success("Check your email");
-              // }, 2600);
+    //           this.onLogout();
 
-              this.onLogout();
-
-              //this.$cookies.set("token", JSON.stringify(user.token), { httpOnly: true });
-              //this.toast.success(response.data.message);
-            }
-            // else {
-            //   this.toast.error(response.data.message);
-            // }
-          })
-          .catch((error) => {
-            if (error.response) {
-              this.toast.error(error.response);
-            } else if (error.request) {
-              this.toast.error("Error: Network Error");
-            } else {
-            }
-            //main.isLoading(false);
-          })
-          .finally(() => {
-            //this.$isLoading(false); // hide loading screen
-          });
-      } catch (error) {}
-    },
+    //         }
+    //       })
+    //       .catch((error) => {
+    //         if (error.response) {
+    //           this.toast.error(error.response);
+    //         } else if (error.request) {
+    //           this.toast.error("Error: Network Error");
+    //         } else {
+    //         }
+    //       })
+    //       .finally(() => {
+    //         //this.$isLoading(false); // hide loading screen
+    //       });
+    //   } catch (error) {}
+    // },
   },
 };
 </script>
