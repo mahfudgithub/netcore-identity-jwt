@@ -1,4 +1,6 @@
-<script setup></script>
+<script setup>
+import background from "../src/components/icons/BackgroundWave.vue";
+</script>
 
 <template>
   <div class="app">
@@ -14,7 +16,8 @@
   --dark: #1e293b;
   --dark-alt: #334155;
   --light: #f1f5f9;
-  --sidebar-width: 300px;
+  --pastel: #ffbaaf;
+  --sidebar-width: 250px;
 }
 
 * {
@@ -25,7 +28,9 @@
 }
 
 body {
-  background: var(--light);
+  background: url("./assets/svg.png") no-repeat center bottom fixed !important;
+  background-color: #fff5e2;
+  background-size: 100px 50px;
 }
 
 button {

@@ -54,8 +54,6 @@
 </template>
 
 <script>
-//import axios from "axios";
-import { useAuthStore } from "@/stores/auth.stores.js";
 import { useToast } from "vue-toastification";
 import { defineForm, field, isValidForm, toObject } from "vue-yup-form";
 import * as Yup from "yup";
@@ -93,9 +91,7 @@ export default {
 
     const api = new AuthService();
 
-    const authStore = useAuthStore();
-
-    return { form, authStore, toast, api };
+    return { form, toast, api };
   },
   // beforeMount() {
   //   this.$isLoading(true); // show loading screen

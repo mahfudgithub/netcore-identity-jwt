@@ -9,7 +9,6 @@ import "bootstrap-icons/font/bootstrap-icons.css";
 import "vue-toastification/dist/index.css";
 import Loading from "vue3-loading-screen";
 import VueCookies from "vue3-cookies";
-// import VueAxios from "vue-axios";
 
 const app = createApp(App);
 const options = {

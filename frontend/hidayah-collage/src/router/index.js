@@ -1,6 +1,5 @@
 import { createRouter, createWebHistory } from "vue-router";
 import HomeView from "../views/HomeView.vue";
-import { useAuthStore } from "../stores/auth.stores.js";
 import { useCookies } from "vue3-cookies";
 
 const { cookies } = useCookies();
@@ -85,12 +84,6 @@ const router = createRouter({
 //   next({ name: "register" });
 // }
 //});
-
-// router.beforeEach(async (to) => {
-//   // redirect to login page if not logged in and trying to access a restricted page
-//   const publicPages = ["/account/login", "/account/register"];
-//   const authRequired = !publicPages.includes(to.path);
-//   const authStore = useAuthStore();
 
 //   if (authRequired && !authStore.user) {
 //     authStore.returnUrl = to.fullPath;
