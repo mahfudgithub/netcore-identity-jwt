@@ -16,5 +16,6 @@ namespace hidayah_collage.Interface
         Task<MessageListResponse> GetListMessageAsync(PagingRequest pagingRequest);
         Task<WebResponse> UpdateMessageAsync(string code, UpdateProductRequest updateProductRequest);
         Task<WebResponse> DeleteMessageAsync(string code);
+        Task<MessageListResponse> GetListMessageByCodeAsync(string msgCode);
     }
 }

@@ -15,9 +15,15 @@ axiosinstance.interceptors.request.use(
   async (config) => {
     config.headers.Authorization = `Bearer ${TokenService.getTokenAccess()}`;
 
-    const currentDate = new Date();
-    const expireDateInt = new Date(TokenService.getExpireToken());
-    const isExpired = expireDateInt.getTime() < currentDate.getTime();
+    // const currentDate = new Date();
+    // const expireDateInt = new Date(TokenService.getExpireToken());
+    // const isExpired = expireDateInt.getTime() < currentDate.getTime();
+    const currentDate = new Date().getTime() / 1000;
+    const currentDateTimeStamp = Math.ceil(currentDate);
+    const token = TokenService.getTokenAccess();
+    const expTokenTimeStamp = TokenService.getExpDecode(token);
+    // const isExpired = TokenService.getIsExpiredToken(expireDateInt);
+    const isExpired = expTokenTimeStamp < currentDateTimeStamp;
 
     if (!isExpired) return config;
 

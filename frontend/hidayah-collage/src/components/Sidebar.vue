@@ -134,51 +134,6 @@ export default {
     closeModal() {
       document.getElementById("close").click();
     },
-    // onCheckExpire() {
-    //   const currentDate = new Date();
-    //   const expireDateInt = new Date(this.expire);
-    //   this.refreshToken = this.$cookies.get("user").refreshToken;
-    //   if (expireDateInt.getTime() < currentDate.getTime()) {
-    //     console.log("masuk expire");
-    //     this.onRefreshToken();
-    //   } else {
-    //     this.onLogout();
-    //   }
-    // },
-    // onRefreshToken() {
-    //   try {
-    //     axios
-    //       .post(`${import.meta.env.VITE_APP_BASE_API_URL}/account/refresh`, {
-    //         RefreshToken: this.refreshToken,
-    //       })
-    //       .then((response) => {
-    //         if (response.data.status) {
-    //           const user = response.data.data;
-
-    //           this.$cookies.remove("user");
-
-    //           this.$cookies.set("user", user, { httpOnly: true });
-    //           this.token = this.$cookies.get("user").token;
-    //           this.expire = this.$cookies.get("user").expireDate;
-    //           this.refreshToken = this.$cookies.get("user").refreshToken;
-
-    //           this.onLogout();
-
-    //         }
-    //       })
-    //       .catch((error) => {
-    //         if (error.response) {
-    //           this.toast.error(error.response);
-    //         } else if (error.request) {
-    //           this.toast.error("Error: Network Error");
-    //         } else {
-    //         }
-    //       })
-    //       .finally(() => {
-    //         //this.$isLoading(false); // hide loading screen
-    //       });
-    //   } catch (error) {}
-    // },
   },
 };
 </script>

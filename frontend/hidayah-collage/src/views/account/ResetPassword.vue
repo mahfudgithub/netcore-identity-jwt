@@ -139,10 +139,6 @@ export default {
           .catch((error) => {
             if (error.response) {
               this.toast.error(error.response.data.title);
-              //this.toast.error("Error: Network Error");
-              //console.log(error.response.data.title);
-              //alert(error.response.title);
-              //this.warningToast();
             } else if (error.request) {
               this.toast.error("Error: Network Error");
             } else {

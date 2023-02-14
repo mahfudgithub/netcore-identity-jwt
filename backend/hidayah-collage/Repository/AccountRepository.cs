@@ -128,9 +128,9 @@ namespace hidayah_collage.Repository
             };
             await _refreshToken.Create(refreshTokenDTO);
 
-            response.FirstName = applicationUser.FirstName;
-            response.LastName = applicationUser.LastName;
-            response.Username = applicationUser.Email;
+            //response.FirstName = applicationUser.FirstName;
+            //response.LastName = applicationUser.LastName;
+            //response.Username = applicationUser.Email;
             response.Token = generateToken.Token;
             response.ExpireDate = generateToken.ExpireDate;
             response.RefreshToken = refreshToken;
@@ -446,9 +446,9 @@ namespace hidayah_collage.Repository
 
             await _refreshToken.Create(refreshTokenDTO);
 
-            response.FirstName = user.FirstName;
-            response.LastName = user.LastName;
-            response.Username = user.Email;
+            //response.FirstName = user.FirstName;
+            //response.LastName = user.LastName;
+            //response.Username = user.Email;
             response.Token = generateToken.Token;
             response.ExpireDate = generateToken.ExpireDate;
             response.RefreshToken = refreshToken;

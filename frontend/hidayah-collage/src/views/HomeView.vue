@@ -25,6 +25,7 @@
 import axios from "axios";
 import Sidebar from "../components/Sidebar.vue";
 //import VueJwtDecode from "vue-jwt-decode";
+import TokenService from "../services/token.service";
 
 export default {
   name: "home",
@@ -45,50 +46,23 @@ export default {
   setup() {},
   beforeMount() {
     //console.log("token " + this.$cookies.get("refreshToken"));
-    //const decode = VueJwtDecode.decode(this.$cookies.get("refreshToken"));
-    // console.log(decode);
-    this.name = this.$cookies.get("user").firstName;
+    //const decode = VueJwtDecode.decode(TokenService.getTokenAccess());
+    const token = TokenService.getTokenAccess();
+    const name = TokenService.getNameDecode(token);
+    const email = TokenService.getEmailDecode(token);
+    //const exp = TokenService.getExpDecode(token);
+    //const expToken = new Date(TokenService.getExpireToken()).getTime() / 1000;
+    //const currentDate = new Date().getTime() / 1000;
+    //console.log("decode exp " + exp + " from result " + expToken + " current " + Math.floor(currentDate));
+    this.name = name;
     //const loginUser = this.$route.params.data;
-    const token = sessionStorage.getItem("refreshToken");
-    console.log("ini token " + token);
+    // const token = sessionStorage.getItem("refreshToken");
+    // console.log("ini token " + token);
     //this.refreshToken();
   },
   // mounted() {
   //   console.log(this.decode);
   // },
-  methods: {
-    refreshToken() {
-      this.token = this.$cookies.get("token");
-      //console.log("refresh token " + this.token);
-      try {
-        axios
-          .post(`${import.meta.env.VITE_APP_BASE_API_URL}/account/refresh`, {
-            RefreshToken: this.token,
-          })
-          .then((response) => {
-            if (response.data.status) {
-              const user = response.data.data;
-
-              //this.$cookies.set("token", JSON.stringify(user.token), { httpOnly: true });
-              this.toast.success(response.data.message);
-            } else {
-              this.toast.error(response.data.message);
-            }
-          })
-          .catch((error) => {
-            if (error.response) {
-              this.toast.error(error.response);
-            } else if (error.request) {
-              this.toast.error("Error: Network Error");
-            } else {
-            }
-            //main.isLoading(false);
-          })
-          .finally(() => {
-            this.$isLoading(false); // hide loading screen
-          });
-      } catch (error) {}
-    },
-  },
+  methods: {},
 };
 </script>

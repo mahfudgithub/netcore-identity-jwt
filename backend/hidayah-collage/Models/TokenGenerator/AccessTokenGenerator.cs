@@ -22,12 +22,13 @@ namespace hidayah_collage.Models.TokenGenerator
             List<Claim> claims = new List<Claim>()
             {
                 new Claim("id", user.Id.ToString()),
-                new Claim(ClaimTypes.Email, user.Email),
-                //new Claim(ClaimTypes.NameIdentifier, user.UserName),
+                new Claim("email", user.Email),
+                new Claim("name", user.FirstName +" "+ user.LastName),
             };
 
             //DateTime expirationTime = DateTime.UtcNow.AddMinutes(_configuration["JWT:AccessTokenExpirationMinutes"]);
-            DateTime expirationTime = DateTime.Now.AddSeconds(15);
+            DateTime expirationTime = DateTime.Now.AddSeconds(10);
+            //DateTime expirationTime = DateTime.Now.AddHours(15);
             string token = _tokenGenerator.GenerateToken(
                 _configuration["JWT:Secret"],
                 _configuration["JWT:ValidIssuer"],

@@ -280,19 +280,6 @@ export default {
     SetMessages(data) {
       this.messages = data;
     },
-    // onCheckExpire() {
-    //   const currentDate = new Date();
-    //   const expireDateInt = new Date(this.expire);
-    //   this.refreshToken = this.$cookies.get("user").refreshToken;
-    //   // if (parseInt(this.expire) * 1000 < currentDate.getTime()) {
-    //   if (expireDateInt.getTime() < currentDate.getTime()) {
-    //     //console.log("masuk expire");
-    //     this.onRefreshToken("onReady");
-    //     //console.log("a " + this.validToken);
-    //   } else {
-    //     this.onSearch();
-    //   }
-    // },
     onClickClear() {
       this.search = "";
       this.page = 1;
@@ -303,51 +290,6 @@ export default {
       this.page = 1;
       this.searchPage(this.page);
     },
-    // onRefreshToken(action) {
-    //   try {
-    //     axios
-    //       .post(`${import.meta.env.VITE_APP_BASE_API_URL}/account/refresh`, {
-    //         RefreshToken: this.refreshToken,
-    //       })
-    //       .then((response) => {
-    //         if (response.data.status) {
-    //           const user = response.data.data;
-
-    //           this.$cookies.remove("user");
-
-    //           this.$cookies.set("user", user, { httpOnly: true });
-    //           this.token = this.$cookies.get("user").token;
-    //           this.expire = this.$cookies.get("user").expireDate;
-    //           this.refreshToken = this.$cookies.get("user").refreshToken;
-    //           //console.log("a " + action);
-    //           if (action == "onReady") {
-    //             this.onSearch();
-    //           } else if (action == "onById") {
-    //             this.onSearchById();
-    //           } else if (action == "onByPage") {
-    //             this.page = this.currentPage;
-    //             this.onSearch();
-    //           } else if (action == "onSaveRefresh") {
-    //             this.onSave();
-    //           } else if (action == "onDeleteData") {
-    //             this.onModalDeleteData();
-    //           }
-    //         }
-    //       })
-    //       .catch((error) => {
-    //         if (error.response) {
-    //           console.log(error.response);
-    //         } else if (error.request) {
-    //           console.log("Error: Network Error");
-    //         } else {
-    //         }
-    //         //main.isLoading(false);
-    //       })
-    //       .finally(() => {
-    //         //this.$isLoading(false); // hide loading screen
-    //       });
-    //   } catch (error) {}
-    // },
     onSearch() {
       try {
         axiosinstance
@@ -373,37 +315,20 @@ export default {
           .finally(() => {});
       } catch (error) {}
     },
-    // onCheckSearchById() {
-    //   const currentDate = new Date();
-    //   const expireDateInt = new Date(this.expire);
-    //   this.refreshToken = this.$cookies.get("user").refreshToken;
-    //   // if (parseInt(this.expire) * 1000 < currentDate.getTime()) {
-    //   if (this.search.length < 1) {
-    //     this.onSearch();
-    //   } else {
-    //     if (expireDateInt.getTime() < currentDate.getTime()) {
-    //       //console.log("masuk expire");
-    //       this.onRefreshToken("onById");
-    //       //console.log("a " + this.validToken);
-    //     } else {
-    //       this.onSearchById();
-    //     }
-    //   }
-    // },
     onSearchById() {
       if (this.search.length < 1) {
         this.onSearch();
       } else {
         try {
           axiosinstance
-            .get(`/message/${this.search}`)
+            .get(`/message/getByCode/${this.search}`)
             .then((response) => {
               if (response.data.status) {
-                const listMessages = response.data.data;
-                //console.log("total " + [listMessages].length);
-                this.SetMessages([listMessages]);
-                this.totalPage = 1;
-                //console.log(this.messages);
+                const listMessages = response.data.data.list;
+
+                this.SetMessages(listMessages);
+                this.totalItems = response.data.data.total;
+                this.totalPage = Math.ceil(this.totalItems / this.pageSize);
               } else {
                 this.SetMessages([]);
                 this.totalPage = 1;
@@ -442,14 +367,6 @@ export default {
         this.currentPage = pg;
       }
 
-      // const currentDate = new Date();
-      // const expireDateInt = new Date(this.expire);
-      // this.refreshToken = this.$cookies.get("user").refreshToken;
-      // if (expireDateInt.getTime() < currentDate.getTime()) {
-      //   //console.log("masuk expire");
-      //   this.onRefreshToken("onByPage");
-      //   //console.log("a " + this.validToken);
-      // } else {
       if (pg == "first") {
         this.page = 1;
       } else if (pg == "last") {
@@ -500,19 +417,6 @@ export default {
           this.errorForm[err.path] = err.message;
         });
     },
-    // onBeforeSave(e) {
-    //   e.preventDefault();
-    //   const currentDate = new Date();
-    //   const expireDateInt = new Date(this.expire);
-    //   this.refreshToken = this.$cookies.get("user").refreshToken;
-    //   if (expireDateInt.getTime() < currentDate.getTime()) {
-    //     //console.log("masuk expire");
-    //     this.onRefreshToken("onSaveRefresh");
-    //     //console.log("a " + this.validToken);
-    //   } else {
-    //     this.onSave();
-    //   }
-    // },
     onSave(e) {
       e.preventDefault();
       this.isSubmitted = true;
@@ -651,60 +555,8 @@ export default {
           this.onCloseModalDelete();
           this.page = 1;
           this.searchPage(this.page);
-          // this.isActive = [];
-          // this.activeFirst = false;
-          // this.activeLast = false;
         });
-
-      // const currentDate = new Date();
-      // const expireDateInt = new Date(this.expire);
-      // this.refreshToken = this.$cookies.get("user").refreshToken;
-      // if (expireDateInt.getTime() < currentDate.getTime()) {
-      //   this.onRefreshToken("onDeleteData");
-      // } else {
-      //   this.onModalDeleteData();
-      // }
     },
-    // onModalDeleteData() {
-    //   //console.log("on delete");
-    //   this.$isLoading(true); // show loading screen
-
-    //   try {
-    //     axios
-    //       .delete(`${import.meta.env.VITE_APP_BASE_API_URL}/message/${this.formAddEdit.msgCode}`, {
-    //         headers: {
-    //           Authorization: `Bearer ${TokenService.getTokenAccess()}`,
-    //         },
-    //       })
-    //       .then((response) => {
-    //         if (response.data.status) {
-    //           this.toast.success(response.data.message);
-    //         } else {
-    //           this.toast.error(response.data.message);
-    //         }
-    //       })
-    //       .catch((error) => {
-    //         if (error.response) {
-    //           this.toast.error(error.response.data.title);
-    //         } else if (error.request) {
-    //           this.toast.error("Error: Network Error");
-    //         } else {
-    //         }
-    //       })
-    //       .finally(() => {
-    //         this.$isLoading(false); // hide loading screen
-    //         this.onCloseModalDelete();
-    //         this.page = 1;
-    //         this.onCheckExpire();
-    //         this.isActive = [];
-    //         this.activeFirst = false;
-    //         this.activeLast = false;
-    //       });
-    //   } catch (error) {
-    //     this.toast.error(error.message);
-    //     this.$isLoading(false); // hide loading screen
-    //   }
-    // },
   },
 };
 </script>

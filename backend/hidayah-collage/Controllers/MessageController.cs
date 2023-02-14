@@ -76,7 +76,7 @@ namespace hidayah_collage.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetListMessage([FromQuery] int size =5 , int page=1)
+        public async Task<IActionResult> GetListMessage([FromQuery]int size =5 ,int page=1)
         {
             if (ModelState.IsValid)
             {
@@ -91,6 +91,32 @@ namespace hidayah_collage.Controllers
                     else
                     {
                         return BadRequest(result);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    return StatusCode(500, ex.Message);
+                }
+            }
+
+            return BadRequest("Some Properties are not valid ");
+        }
+
+        [HttpGet("getByCode/{cd}")]     
+        public async Task<IActionResult> GetListMessageByCode([FromRoute] string cd)
+        {
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    var result = await _message.GetListMessageByCodeAsync(cd);
+                    if (result.status)
+                    {
+                        return Ok(result);
+                    }
+                    else
+                    {
+                        return Ok(result);
                     }
                 }
                 catch (Exception ex)

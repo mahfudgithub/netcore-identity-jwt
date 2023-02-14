@@ -147,7 +147,7 @@ namespace hidayah_collage.Repository
                     messageListResponse.message = _getMessageRepository.GetMeessageText("SUC006");
                 }
                 messageListResponse.status = true;
-                messageListResponse.data.List = result.ToPagedList(pagingRequest.Size,pagingRequest.Page);
+                //messageListResponse.data.List = result.ToPagedList(pagingRequest.Size,pagingRequest.Page);
                 messageListResponse.data.List = result;
                 messageListResponse.data.total = resultCount;
             }
@@ -225,6 +225,37 @@ namespace hidayah_collage.Repository
             }
 
             return webResponse;
+        }
+
+        public async Task<MessageListResponse> GetListMessageByCodeAsync(string msgCode)
+        {
+            MessageListResponse messageListResponse = new MessageListResponse();
+
+            try
+            {
+                SqlParameter paramMsgCode = new SqlParameter("@msgCode", msgCode);
+                var result = await _appDbContext.messageListNotMappeds.FromSqlRaw("dbo.[GetMessageListByCode] @msgCode", paramMsgCode).ToListAsync();
+               
+                if (result == null)
+                {
+                    messageListResponse.message = "No Data Found";
+                }
+                else
+                {
+                    messageListResponse.message = _getMessageRepository.GetMeessageText("SUC006");
+                }
+                messageListResponse.status = true;
+                messageListResponse.data.List = result.ToPagedList(5,1);
+                messageListResponse.data.total = result.Count();
+            }
+            catch (Exception e)
+            {
+                messageListResponse.status = false;
+                messageListResponse.message = e.Message.ToString();
+                messageListResponse.data = null;
+            }
+
+            return messageListResponse;
         }
     }
 }
