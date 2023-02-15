@@ -56,12 +56,12 @@
     <div class="flex"></div>
 
     <div class="menu">
-      <!-- <RouterLink to="/settings" class="button">
-        <span class="material-icons">settings</span>
-        <span class="text">Settings</span>
-      </RouterLink> -->
+      <RouterLink :to="{ name: 'profile' }" class="button">
+        <span class="material-icons">person</span>
+        <span class="text">My Profile</span>
+      </RouterLink>
       <!-- Button trigger modal -->
-      <a href="#" class="button" data-bs-toggle="modal" data-bs-target="#exampleModal"><span class="material-icons">logout</span><span class="text">Logout</span> </a>
+      <a href="#" class="button" data-bs-toggle="modal" data-bs-target="#exampleModal"><span class="material-icons" style="color: red">logout</span><span class="text">Logout</span> </a>
     </div>
   </aside>
 </template>

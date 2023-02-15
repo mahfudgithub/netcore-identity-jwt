@@ -143,7 +143,8 @@ namespace hidayah_collage.Controllers
 
             if (result.status)
             {
-                return Redirect($"{_configuration["AppUrl"]}/confirmemail.html");
+                //return Redirect($"{_configuration["AppUrl"]}/confirmemail.html");
+                return Redirect($"{_configuration["AppClientUrl"]}/confirmemail");
             }
 
             return BadRequest(result);
@@ -202,6 +203,60 @@ namespace hidayah_collage.Controllers
            // HttpContext.Session.Clear();
             
             //return Redirect($"{_configuration["AppUrl"]}/confirmemail.html");
+        }
+
+        [Authorize]
+        [HttpGet("profile/{id}")]
+        public async Task<IActionResult> GetUserInfo([FromRoute] string id)
+        {
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    var result = await _account.GetUserInfo(id);
+                    if (result.status)
+                    {
+                        return Ok(result);
+                    }
+                    else
+                    {
+                        return Ok(result);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    return StatusCode(500, ex.Message);
+                }
+            }
+
+            return BadRequest("Some Properties are not valid ");
+        }
+
+        [Authorize]
+        [HttpPost("confirmedemail/{id}")]
+        public async Task<IActionResult> SendEmailConfirmed([FromRoute] string id)
+        {
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    var result = await _account.SendConfirmedEmail(id);
+                    if (result.status)
+                    {
+                        return Ok(result);
+                    }
+                    else
+                    {
+                        return Ok(result);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    return StatusCode(500, ex.Message);
+                }
+            }
+
+            return BadRequest("Some Properties are not valid ");
         }
 
         public IActionResult BadRequestResult()

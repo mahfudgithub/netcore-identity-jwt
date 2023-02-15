@@ -6,11 +6,11 @@
   </main> -->
   <main id="msg-page">
     <!-- <div class="container"> -->
-    <div class="row">
-      <div class="col">
-        <h1>Message</h1>
-      </div>
-    </div>
+    <!-- <div class="row">
+      <div class="col"> -->
+    <h1>Message</h1>
+    <!-- </div>
+    </div> -->
     <!-- Modal -->
     <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
       <div class="modal-dialog modal-dialog-centered modal-sm">
@@ -95,11 +95,11 @@
       </div>
     </div>
 
-    <div class="row">
-      <div class="col">
-        <hr class="border border-danger border-1 opacity-10" />
-      </div>
-    </div>
+    <!-- <div class="row">
+      <div class="col"> -->
+    <hr class="border border-danger border-1 opacity-10" />
+    <!-- </div>
+    </div> -->
     <!-- <div class="container"> -->
     <div class="row g-3">
       <div class="col-md-3">

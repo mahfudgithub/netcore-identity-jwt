@@ -221,6 +221,7 @@ namespace hidayah_collage.Repository
             
             if (result.Succeeded)
             {
+                /*
                 var confirmEmailToken = await _userManager.GenerateEmailConfirmationTokenAsync(user);
 
                 var encodedEmailToken = Encoding.UTF8.GetBytes(confirmEmailToken);
@@ -236,7 +237,7 @@ namespace hidayah_collage.Repository
                 emailRequest.Body = body;
                 //var mail = _mailService.SendEmailAsync(emailRequest);
                 //await _mailService.SendEmailSMTPAsync(emailRequest);
-
+                */
                 response.FirstName = registerRequest.FirstName;
                 response.Username = registerRequest.Email;
                 response.Email = registerRequest.Email;
@@ -476,6 +477,73 @@ namespace hidayah_collage.Repository
             webResponse.status = true;
             webResponse.message = _getMessageRepository.GetMeessageText("SUC004");
             webResponse.data = null;
+            return webResponse;
+        }
+
+        public async Task<WebResponse> GetUserInfo(string userId)
+        {
+            WebResponse webResponse = new WebResponse();
+
+            var result = await _userManager.FindByIdAsync(userId);
+            if (result == null)
+            {
+                webResponse.status = false;
+                webResponse.message = _getMessageRepository.GetMeessageText("ERR002");
+                webResponse.data = null;
+                return webResponse;
+            }
+            var user = new ApplicationUser()
+            {
+                FirstName = result.FirstName,
+                LastName = result.LastName,
+                Email = result.Email,
+                UserName = result.UserName,
+                Id = result.Id,
+                EmailConfirmed = result.EmailConfirmed,
+                PhoneNumber = result.PhoneNumber,
+            };
+
+            webResponse.status = true;
+            webResponse.message = _getMessageRepository.GetMeessageText("SUC005");
+            webResponse.data = user;
+
+            return webResponse;
+        }
+
+        public async Task<WebResponse> SendConfirmedEmail(string userId)
+        {
+            WebResponse webResponse = new WebResponse();
+            EmailRequest emailRequest = new EmailRequest();
+
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user == null)
+            {
+                webResponse.status = false;
+                webResponse.message = _getMessageRepository.GetMeessageText("ERR002");
+                webResponse.data = null;
+                return webResponse;
+            }
+
+            var confirmEmailToken = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+
+            var encodedEmailToken = Encoding.UTF8.GetBytes(confirmEmailToken);
+            var validEmailToken = WebEncoders.Base64UrlEncode(encodedEmailToken);
+
+            var Url = $"{_configuration["AppUrl"]}/api/Account/ConfirmEmail?userId={ user.Id }&token={ validEmailToken }";
+
+            string subject = "Confirm Your Email";
+            string body = "Please confirm your email by clicking <a href=\"" + Url + "\">Confirm</a>";
+
+            emailRequest.Subject = subject;
+            emailRequest.ToEmail = user.Email;
+            emailRequest.Body = body;
+            //var mail = _mailService.SendEmailAsync(emailRequest);
+            await _mailService.SendEmailSMTPAsync(emailRequest);
+
+            webResponse.status = true;
+            webResponse.message = _getMessageRepository.GetMeessageText("SUC005");
+            webResponse.data = user;
+
             return webResponse;
         }
     }

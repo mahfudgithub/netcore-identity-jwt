@@ -1,8 +1,4 @@
 ﻿using hidayah_collage.Models;
-using hidayah_collage.Models.Email;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace hidayah_collage.Interface
@@ -16,5 +12,7 @@ namespace hidayah_collage.Interface
         Task<WebResponse> ResetPassword(ResetPasswordRequest resetPasswordRequest);
         Task<WebResponse> RefreshToken(RefreshTokenRequest refreshTokenRequest);
         Task<WebResponse> Logout(string rawUserId);
+        Task<WebResponse> GetUserInfo(string userId);
+        Task<WebResponse> SendConfirmedEmail(string userId);
     }
 }

@@ -64,9 +64,6 @@ This API building with C# languange , framework .net core, and package from nuge
 		"message" : "string",
 		"data" : {
 			 "refreshToken" : "string",
-			 "firstName" : "string",
-			 "lastName" : "string",
-			 "username" : "string",
 			 "token" : "string",
 			 "expireDate" : "Date"
 		 }
@@ -152,9 +149,6 @@ This API building with C# languange , framework .net core, and package from nuge
 		"message" : "string",
 		"data" : {
 			 "refreshToken" : "string",
-			 "firstName" : "string",
-			 "lastName" : "string",
-			 "username" : "string",
 			 "token" : "string",
 			 "expireDate" : "Date"
 		 }

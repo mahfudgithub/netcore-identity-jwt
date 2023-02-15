@@ -53,6 +53,11 @@ class TokenService {
     cookies.set("user", user);
   }
 
+  getIdDecode(token) {
+    const decode = VueJwtDecode.decode(token).id;
+    return decode;
+  }
+
   getNameDecode(token) {
     const decode = VueJwtDecode.decode(token).name;
     return decode;

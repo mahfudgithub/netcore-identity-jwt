@@ -54,6 +54,16 @@ const router = createRouter({
       // which is lazy-loaded when the route is visited.
       component: () => import("../views/MessageMaster.vue"),
     },
+    {
+      path: "/profile",
+      name: "profile",
+      component: () => import("../views/account/MyProfile.vue"),
+    },
+    {
+      path: "/confirmemail",
+      name: "confirm",
+      component: () => import("../views/account/ConfirmEmail.vue"),
+    },
   ],
   // routes: [
   //   { path: "/", component: HomeView },
