@@ -2,6 +2,7 @@ using hidayah_collage.DataContext;
 using hidayah_collage.Interface;
 using hidayah_collage.Models;
 using hidayah_collage.Models.Email;
+using hidayah_collage.Models.JWT;
 using hidayah_collage.Models.TokenGenerator;
 using hidayah_collage.Models.TokenValidator;
 using hidayah_collage.Repository;
@@ -57,6 +58,11 @@ namespace hidayah_collage
                 options.IdleTimeout = TimeSpan.FromMinutes(60);
             });
 
+            JwtConfig jwtConfig = new JwtConfig();
+            Configuration.Bind("JWT", jwtConfig);
+
+            services.AddSingleton(jwtConfig);
+
             services.AddAuthorization();
             services.AddAuthentication(option =>
             {
@@ -75,9 +81,12 @@ namespace hidayah_collage
                         RequireExpirationTime = true,
                         ValidateLifetime = true,
                         ClockSkew = TimeSpan.Zero,
-                        ValidAudience = Configuration["JWT:ValidAudience"],
-                        ValidIssuer = Configuration["JWT:ValidIssuer"],
-                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["JWT:Secret"])),
+                        //ValidAudience = Configuration["JWT:ValidAudience"],
+                        //ValidIssuer = Configuration["JWT:ValidIssuer"],
+                        ValidAudience = jwtConfig.Audience,
+                        ValidIssuer = jwtConfig.Issuer,
+                        //IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["JWT:Secret"])),
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtConfig.AccessTokenSecret)),
                         ValidateIssuerSigningKey = true
                     };
                     //option.Events = new JwtBearerEvents

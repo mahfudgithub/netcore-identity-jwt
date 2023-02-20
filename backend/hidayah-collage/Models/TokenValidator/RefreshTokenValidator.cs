@@ -1,30 +1,33 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using hidayah_collage.Models.JWT;
+using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System;
-using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace hidayah_collage.Models.TokenValidator
 {
     public class RefreshTokenValidator
     {
         private readonly IConfiguration _configuration;
+        private readonly JwtConfig _jwtConfig;
 
-        public RefreshTokenValidator(IConfiguration configuration)
+        public RefreshTokenValidator(IConfiguration configuration, JwtConfig jwtConfig)
         {
             _configuration = configuration;
+            _jwtConfig = jwtConfig;
         }
 
         public bool Validate(string refreshToken)
         {
             TokenValidationParameters validationParameters = new TokenValidationParameters()
             {
-                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWT:Refresh"])),
-                ValidIssuer = _configuration["JWT:ValidIssuer"],
-                ValidAudience = _configuration["JWT:ValidAudience"],
+                //IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWT:Refresh"])),
+                //ValidIssuer = _configuration["JWT:ValidIssuer"],
+                //ValidAudience = _configuration["JWT:ValidAudience"],
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtConfig.RefreshTokenSecret)),
+                ValidIssuer = _jwtConfig.Issuer,
+                ValidAudience = _jwtConfig.Audience,
                 ValidateIssuerSigningKey = true,
                 ValidateIssuer = true,
                 ValidateAudience = true,

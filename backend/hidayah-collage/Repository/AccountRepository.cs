@@ -501,10 +501,12 @@ namespace hidayah_collage.Repository
                 Id = result.Id,
                 EmailConfirmed = result.EmailConfirmed,
                 PhoneNumber = result.PhoneNumber,
+                ConcurrencyStamp = null,
+                SecurityStamp = null
             };
 
             webResponse.status = true;
-            webResponse.message = _getMessageRepository.GetMeessageText("SUC005");
+            webResponse.message = _getMessageRepository.GetMeessageText("SUC012");
             webResponse.data = user;
 
             return webResponse;
@@ -531,8 +533,11 @@ namespace hidayah_collage.Repository
 
             var Url = $"{_configuration["AppUrl"]}/api/Account/ConfirmEmail?userId={ user.Id }&token={ validEmailToken }";
 
-            string subject = "Confirm Your Email";
-            string body = "Please confirm your email by clicking <a href=\"" + Url + "\">Confirm</a>";
+            string content = "<html><head> <style> body, html, table {font-family: Nunito Sans, Helvetica Neue, Helvetiva, Arial, sans-serif;} table { border:0 } tbody td {text-align: center; height:35; width:160; background-color:#200e32;} a {text-decoration:none; color:white; display:inline-block; line-height:35px;width:150;}</style>   </head><body>Welcome to Collage School !<br>  <br>Please Confirm your email address. <br> <br> <table><tbody><tr><td>{url}</td></tr></tbody></table> <br> <br> Thank you.<br></body></html>";
+            string link = "<a target=\"_blank\" href=\"" + Url + "\">Confirm Email</a>";
+            string subject = "Confirm Your Email - Collage School";
+            //string body = "Please confirm your email by clicking <a href=\"" + Url + "\">Confirm</a>";
+            string body = content.Replace("{url}", link);
 
             emailRequest.Subject = subject;
             emailRequest.ToEmail = user.Email;
@@ -541,8 +546,8 @@ namespace hidayah_collage.Repository
             await _mailService.SendEmailSMTPAsync(emailRequest);
 
             webResponse.status = true;
-            webResponse.message = _getMessageRepository.GetMeessageText("SUC005");
-            webResponse.data = user;
+            webResponse.message = _getMessageRepository.GetMeessageText("SUC013");
+            webResponse.data = body;
 
             return webResponse;
         }
