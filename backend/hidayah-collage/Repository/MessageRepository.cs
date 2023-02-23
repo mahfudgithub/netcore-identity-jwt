@@ -3,14 +3,13 @@ using hidayah_collage.Interface;
 using hidayah_collage.Models;
 using hidayah_collage.Models.MessageResponse;
 using hidayah_collage.Models.Paging;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
+using Sakura.AspNetCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Sakura.AspNetCore;
-using Microsoft.Data.SqlClient;
-using System.Data;
 
 namespace hidayah_collage.Repository
 {
@@ -123,14 +122,18 @@ namespace hidayah_collage.Repository
                 //Sql Raw
                 //var result = await _appDbContext.messageListNotMappeds.FromSqlRaw("select * from (SELECT ROW_NUMBER() over(order by [MSG_CD] asc ) [SEQ],[MSG_CD],[MSG_TEXT] FROM [dbo].[Message])tb where 1 = 1 and tb.SEQ between {0} and {1}", rowStart, rowEnd).ToListAsync();
                 //SP
-                SqlParameter pRowStart = new SqlParameter("@rowStart", rowStart);
-                SqlParameter pRowEnd = new SqlParameter("@rowEnd", rowEnd);
-                var result = await _appDbContext.messageListNotMappeds.FromSqlRaw("dbo.[GetMessageList] @rowStart,@rowEnd", pRowStart, pRowEnd).ToListAsync();
+                //var result = await _appDbContext.messageListNotMappeds.FromSqlRaw("dbo.[GetMessageList] @rowStart,@rowEnd", pRowStart, pRowEnd).ToListAsync();
+                //var result = await _appDbContext.messageListNotMappeds.FromSqlRaw("dbo.[GetMessageList] @rowStart,@rowEnd", pRowStart, pRowEnd).ToListAsync();
+                
+                var result = await GetMessageListsAsync(rowStart, rowEnd);
+               
                 //var result1 = await _appDbContext.Set<MessageListNotMapped>().FromSqlRaw("Exec dbo.GetMessageList @rowStart,@rowEnd",  pRowStart, pRowEnd ).ToArrayAsync();
                 //var result = _appDbContext.Set<MessageListNotMapped>().FromSql("dbo.[GetMessageList] @rowStart,@rowEnd", pRowStart, pRowEnd).ToList();
-                var pRowStart1 = new SqlParameter("@rowStart", rowStart);
-                var pRowEnd2 = new SqlParameter("@rowEnd", rowEnd);
          
+                //var db = new AppDbContext();
+                //string query = @"select ID , Name from People where ... ";
+                //var result = db.ExecuteQuery<MessageListNotMapped>(query);
+
                 //In EntityFrameworkCore we have two methods for executing Stored Procedures:
                 //1.FromSqlRaw() – used to run query statements that return records from the database
                 //2. ExecuteSqlRaw() / ExecuteSqlRawAsync() – executes a command that can modify data on the database(typically DML commands like INSERT, UPDATE or DELETE)
@@ -233,9 +236,10 @@ namespace hidayah_collage.Repository
 
             try
             {
-                SqlParameter paramMsgCode = new SqlParameter("@msgCode", msgCode);
-                var result = await _appDbContext.messageListNotMappeds.FromSqlRaw("dbo.[GetMessageListByCode] @msgCode", paramMsgCode).ToListAsync();
-               
+                //SqlParameter paramMsgCode = new SqlParameter("@msgCode", msgCode);
+                var result = await GetMessageByCodeAsync(msgCode);//_appDbContext.messageListNotMappeds.FromSqlRaw("dbo.[GetMessageListByCode] @msgCode", paramMsgCode).ToListAsync();
+
+
                 if (result == null)
                 {
                     messageListResponse.message = "No Data Found";
@@ -247,6 +251,7 @@ namespace hidayah_collage.Repository
                 messageListResponse.status = true;
                 messageListResponse.data.List = result.ToPagedList(5,1);
                 messageListResponse.data.total = result.Count();
+
             }
             catch (Exception e)
             {
@@ -257,5 +262,43 @@ namespace hidayah_collage.Repository
 
             return messageListResponse;
         }
+
+        public async Task<IEnumerable<MessageListNotMapped>> GetMessageListsAsync(int rowStart, int rowEnd)
+        {
+            
+            object[] myParms =
+                {   new SqlParameter("@rowStart", rowStart),
+                    new SqlParameter("@rowEnd", rowEnd)
+                };
+
+            return await _appDbContext.Set<MessageListNotMapped>()
+                     .FromSqlRaw("Execute dbo.[GetMessageList] @rowStart,@rowEnd", myParms).AsNoTracking()
+                    .ToListAsync();
+        }
+
+        public async Task<IEnumerable<MessageListNotMapped>> GetMessageByCodeAsync(string msgCode)
+        {
+            object[] myParms =
+                {   new SqlParameter("@msgCode", msgCode)
+                };
+
+            return await _appDbContext.Set<MessageListNotMapped>()
+                     .FromSqlRaw("dbo.[GetMessageListByCode] @msgCode", myParms).AsNoTracking()
+                    .ToListAsync();
+        }
+
+        //public IQueryable<MessageListNotMapped> SearchMessageLists(int rowStart, int rowEnd)
+        //{
+        //    //var pRowStart = new SqlParameter("@rowStart", rowStart);
+        //    //var pRowEnd = new SqlParameter("@rowEnd", rowEnd);
+
+        //    object[] myParms =
+        //        {   new SqlParameter("@rowStart", rowStart),
+        //            new SqlParameter("@rowEnd", rowEnd)
+        //        };
+
+        //    return this.messageListNotMappeds.FromSqlRaw("Execute dbo.[GetMessageList] @rowStart,@rowEnd", myParms);
+        //}
+
     }
 }

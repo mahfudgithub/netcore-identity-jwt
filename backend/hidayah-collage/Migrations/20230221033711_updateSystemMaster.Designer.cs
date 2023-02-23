@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using hidayah_collage.DataContext;
 
 namespace hidayah_collage.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230221033711_updateSystemMaster")]
+    partial class updateSystemMaster
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -232,6 +234,20 @@ namespace hidayah_collage.Migrations
                     b.HasKey("MSG_CD");
 
                     b.ToTable("Message");
+                });
+
+            modelBuilder.Entity("hidayah_collage.Models.MessageResponse.MessageListNotMapped", b =>
+                {
+                    b.Property<string>("MSG_CD")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("MSG_TEXT")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<long>("SEQ")
+                        .HasColumnType("bigint");
+
+                    b.ToTable("messageListNotMappeds");
                 });
 
             modelBuilder.Entity("hidayah_collage.Models.RefreshToken", b =>
