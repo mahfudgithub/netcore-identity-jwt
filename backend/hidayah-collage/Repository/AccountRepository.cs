@@ -1,5 +1,4 @@
-﻿using hidayah_collage.DataContext;
-using hidayah_collage.Interface;
+﻿using hidayah_collage.Interface;
 using hidayah_collage.Models;
 using hidayah_collage.Models.Email;
 using hidayah_collage.Models.TokenGenerator;
@@ -7,14 +6,8 @@ using hidayah_collage.Models.TokenValidator;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Options;
-using Microsoft.IdentityModel.Tokens;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
-using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -31,6 +24,7 @@ namespace hidayah_collage.Repository
         private readonly RefreshTokenGenerator _refreshTokenGenerator;
         private readonly IRefreshToken _refreshToken;
         private readonly RefreshTokenValidator _refreshTokenValidator;
+        private readonly SystemMasterRepository _systemMasterRepository;
 
         public AccountRepository(UserManager<ApplicationUser> userManager
             ,SignInManager<ApplicationUser> signInManager
@@ -41,6 +35,7 @@ namespace hidayah_collage.Repository
             ,RefreshTokenGenerator refreshTokenGenerator
             ,IRefreshToken refreshToken
             ,RefreshTokenValidator refreshTokenValidator
+            ,SystemMasterRepository systemMasterRepository
             )
         {
             _userManager = userManager;
@@ -52,6 +47,7 @@ namespace hidayah_collage.Repository
             _refreshTokenGenerator = refreshTokenGenerator;
             _refreshToken = refreshToken;
             _refreshTokenValidator = refreshTokenValidator;
+            _systemMasterRepository = systemMasterRepository;
         }
 
         public async Task<WebResponse> Login(LoginRequest loginRequest)
@@ -526,23 +522,41 @@ namespace hidayah_collage.Repository
                 return webResponse;
             }
 
+            var systemMaster = await _systemMasterRepository.GetListMasterByType("EMAIL_CONFIRM");
+            if (systemMaster == null)
+            {
+                webResponse.status = false;
+                webResponse.message = "System Master Not Found";
+                webResponse.data = null;
+                return webResponse;
+            }
+
             var confirmEmailToken = await _userManager.GenerateEmailConfirmationTokenAsync(user);
 
             var encodedEmailToken = Encoding.UTF8.GetBytes(confirmEmailToken);
             var validEmailToken = WebEncoders.Base64UrlEncode(encodedEmailToken);
 
-            var Url = $"{_configuration["AppUrl"]}/api/Account/ConfirmEmail?userId={ user.Id }&token={ validEmailToken }";
+            var newUrl = systemMaster.Where(x => x.Code == "URL").FirstOrDefault().Value_Txt;
+            newUrl = newUrl.Replace("{url}", _configuration["AppUrl"]);
+            newUrl = newUrl.Replace("{0}", userId);
+            newUrl = newUrl.Replace("{1}", validEmailToken);
+            //var Url = $"{_configuration["AppUrl"]}/api/Account/ConfirmEmail?userId={ user.Id }&token={ validEmailToken }";
+            
+            var newContent = systemMaster.Where(x => x.Code == "BODY").FirstOrDefault().Value_Txt;
 
-            string content = "<html><head> <style> body, html, table {font-family: Nunito Sans, Helvetica Neue, Helvetiva, Arial, sans-serif;} table { border:0 } tbody td {text-align: center; height:35; width:160; background-color:#200e32;} a {text-decoration:none; color:white; display:inline-block; line-height:35px;width:150;}</style>   </head><body>Welcome to Collage School !<br>  <br>Please Confirm your email address. <br> <br> <table><tbody><tr><td>{url}</td></tr></tbody></table> <br> <br> Thank you.<br></body></html>";
-            string link = "<a target=\"_blank\" href=\"" + Url + "\">Confirm Email</a>";
-            string subject = "Confirm Your Email - Collage School";
+            //string content = "<html><head> <style> body, html, table {font-family: Nunito Sans, Helvetica Neue, Helvetiva, Arial, sans-serif;} table { border:0 } tbody td {text-align: center; height:35; width:160; background-color:#200e32;} a {text-decoration:none; color:white; display:inline-block; line-height:35px;width:150;}</style>   </head><body>Welcome to Collage School !<br>  <br>Please Confirm your email address. <br> <br> <table><tbody><tr><td>{url}</td></tr></tbody></table> <br> <br> Thank you.<br></body></html>";
+            string newLink = systemMaster.Where(x => x.Code == "LINK").FirstOrDefault().Value_Txt;
+            newLink = newLink.Replace("{newurl}", newUrl);
+            //string link = "<a target=\"_blank\" href=\"" + newUrl + "\">Confirm Email</a>";
+            string newSubject = systemMaster.Where(x => x.Code == "SUBJECT").FirstOrDefault().Value_Txt;
+            //string subject = "Confirm Your Email - Collage School";
             //string body = "Please confirm your email by clicking <a href=\"" + Url + "\">Confirm</a>";
-            string body = content.Replace("{url}", link);
+            string body = newContent.Replace("{url}", newLink);
 
-            emailRequest.Subject = subject;
+            emailRequest.Subject = newSubject;
             emailRequest.ToEmail = user.Email;
             emailRequest.Body = body;
-            //var mail = _mailService.SendEmailAsync(emailRequest);
+            
             await _mailService.SendEmailSMTPAsync(emailRequest);
 
             webResponse.status = true;

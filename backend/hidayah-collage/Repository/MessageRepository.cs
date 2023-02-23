@@ -98,7 +98,7 @@ namespace hidayah_collage.Repository
                 };
 
                  _appDbContext.Message.Add(data);
-                var result = await _appDbContext.SaveChangesAsync();
+                 await _appDbContext.SaveChangesAsync();
 
                 webResponse.status = true;
                 webResponse.message = _getMessageRepository.GetMeessageText("SUC010");
@@ -220,7 +220,7 @@ namespace hidayah_collage.Repository
                     MSG_CD = code
                 };
                 _appDbContext.Message.Remove(data);
-                var result = await _appDbContext.SaveChangesAsync();
+                await _appDbContext.SaveChangesAsync();
 
                 webResponse.status = true;
                 webResponse.message = _getMessageRepository.GetMeessageText("SUC009");
@@ -267,7 +267,8 @@ namespace hidayah_collage.Repository
         {
             
             object[] myParms =
-                {   new SqlParameter("@rowStart", rowStart),
+                {   
+                    new SqlParameter("@rowStart", rowStart),
                     new SqlParameter("@rowEnd", rowEnd)
                 };
 
@@ -279,7 +280,8 @@ namespace hidayah_collage.Repository
         public async Task<IEnumerable<MessageListNotMapped>> GetMessageByCodeAsync(string msgCode)
         {
             object[] myParms =
-                {   new SqlParameter("@msgCode", msgCode)
+                {   
+                    new SqlParameter("@msgCode", msgCode)
                 };
 
             return await _appDbContext.Set<MessageListNotMapped>()
