@@ -530,25 +530,37 @@ namespace hidayah_collage.Repository
                 webResponse.data = null;
                 return webResponse;
             }
+            var newUrl = systemMaster.Where(x => x.Code == "URL").FirstOrDefault().Value_Txt;
+            var newContent = systemMaster.Where(x => x.Code == "BODY").FirstOrDefault().Value_Txt;
+            var newLink = systemMaster.Where(x => x.Code == "LINK").FirstOrDefault().Value_Txt;
+            var newSubject = systemMaster.Where(x => x.Code == "SUBJECT").FirstOrDefault().Value_Txt;
+
+            if (newUrl == null || newContent == null || newLink == null || newSubject == null)
+            {
+                webResponse.status = false;
+                webResponse.message = "System Master Not Complete";
+                webResponse.data = null;
+                return webResponse;
+            }
 
             var confirmEmailToken = await _userManager.GenerateEmailConfirmationTokenAsync(user);
 
             var encodedEmailToken = Encoding.UTF8.GetBytes(confirmEmailToken);
             var validEmailToken = WebEncoders.Base64UrlEncode(encodedEmailToken);
 
-            var newUrl = systemMaster.Where(x => x.Code == "URL").FirstOrDefault().Value_Txt;
+            
             newUrl = newUrl.Replace("{url}", _configuration["AppUrl"]);
             newUrl = newUrl.Replace("{0}", userId);
             newUrl = newUrl.Replace("{1}", validEmailToken);
             //var Url = $"{_configuration["AppUrl"]}/api/Account/ConfirmEmail?userId={ user.Id }&token={ validEmailToken }";
             
-            var newContent = systemMaster.Where(x => x.Code == "BODY").FirstOrDefault().Value_Txt;
+            
 
             //string content = "<html><head> <style> body, html, table {font-family: Nunito Sans, Helvetica Neue, Helvetiva, Arial, sans-serif;} table { border:0 } tbody td {text-align: center; height:35; width:160; background-color:#200e32;} a {text-decoration:none; color:white; display:inline-block; line-height:35px;width:150;}</style>   </head><body>Welcome to Collage School !<br>  <br>Please Confirm your email address. <br> <br> <table><tbody><tr><td>{url}</td></tr></tbody></table> <br> <br> Thank you.<br></body></html>";
-            string newLink = systemMaster.Where(x => x.Code == "LINK").FirstOrDefault().Value_Txt;
+            
             newLink = newLink.Replace("{newurl}", newUrl);
             //string link = "<a target=\"_blank\" href=\"" + newUrl + "\">Confirm Email</a>";
-            string newSubject = systemMaster.Where(x => x.Code == "SUBJECT").FirstOrDefault().Value_Txt;
+            
             //string subject = "Confirm Your Email - Collage School";
             //string body = "Please confirm your email by clicking <a href=\"" + Url + "\">Confirm</a>";
             string body = newContent.Replace("{url}", newLink);
