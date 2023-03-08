@@ -37,5 +37,18 @@ namespace hidayah_collage.DataContext
             base.OnModelCreating(modelBuilder);
             
         }
+        //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        //{
+        //    optionsBuilder.UseSqlServer(GetDefaultConnectionString());
+        //    if (optionsBuilder.IsConfigured)
+        //    {
+
+        //    }
+        //}
+
+        //public static string GetDefaultConnectionString()
+        //{
+        //    return Startup.ConnectionString;
+        //}
     }
 }

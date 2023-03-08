@@ -21,10 +21,13 @@ using System.Text;
 namespace hidayah_collage
 {
     public class Startup
-    {        
+    {
+        public static string ConnectionString { get; private set; }
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
+
+            ConnectionString = Configuration.GetConnectionString("DefaultConnection");
         }
 
         public IConfiguration Configuration { get; }
@@ -34,7 +37,7 @@ namespace hidayah_collage
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<AppDbContext>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"))
+                options.UseSqlServer(ConnectionString)
             );
 
             services.AddIdentity<ApplicationUser, IdentityRole>(opt =>
