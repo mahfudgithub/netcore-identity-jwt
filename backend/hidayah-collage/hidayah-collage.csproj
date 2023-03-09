@@ -46,6 +46,8 @@
     <Compile Remove="Migrations\20230223043649_updatemessagelist.Designer.cs" />
     <Compile Remove="Migrations\20230223043941_updatemessagelist.cs" />
     <Compile Remove="Migrations\20230223043941_updatemessagelist.Designer.cs" />
+    <Compile Remove="Migrations\20230309023635_systemMasterTest.cs" />
+    <Compile Remove="Migrations\20230309023635_systemMasterTest.Designer.cs" />
     <Compile Remove="Models\Paging\PagedResult.cs" />
     <Compile Remove="Models\Paging\PagedResultBase.cs" />
   </ItemGroup>
@@ -62,6 +64,10 @@
     <PackageReference Include="NETCore.MailKit" Version="2.1.0" />
     <PackageReference Include="Sakura.AspNetCore.PagedList" Version="2.0.2" />
     <PackageReference Include="SendGrid" Version="9.28.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\LoggerService\LoggerService.csproj" />
   </ItemGroup>
 
 

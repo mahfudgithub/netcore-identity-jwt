@@ -6,6 +6,7 @@ using hidayah_collage.Models.JWT;
 using hidayah_collage.Models.TokenGenerator;
 using hidayah_collage.Models.TokenValidator;
 using hidayah_collage.Repository;
+using LoggerService;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -15,7 +16,9 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
+using NLog;
 using System;
+using System.IO;
 using System.Text;
 
 namespace hidayah_collage
@@ -25,6 +28,7 @@ namespace hidayah_collage
         public static string ConnectionString { get; private set; }
         public Startup(IConfiguration configuration)
         {
+            LogManager.LoadConfiguration(String.Concat(Directory.GetCurrentDirectory(), "/nlog.config"));
             Configuration = configuration;
 
             ConnectionString = Configuration.GetConnectionString("DefaultConnection");
@@ -107,7 +111,7 @@ namespace hidayah_collage
             services.AddTransient<IMessage, MessageRepository>();
             services.AddTransient<ISystemMaster, SystemMasterRepository>();
             services.AddTransient<IMailService, MailServiceRepository>();
-
+            services.AddSingleton<ILoggerManager, LoggerManager>();
             //services.AddCors(option =>
             //{
             //    option.AddDefaultPolicy(builder =>

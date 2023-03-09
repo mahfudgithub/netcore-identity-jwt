@@ -1,9 +1,9 @@
-﻿using hidayah_collage.DataContext;
-using hidayah_collage.Interface;
+﻿using hidayah_collage.Interface;
 using hidayah_collage.Models;
 using hidayah_collage.Models.Email;
 using hidayah_collage.Models.TokenGenerator;
 using hidayah_collage.Models.TokenValidator;
+using LoggerService;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Configuration;
@@ -26,6 +26,7 @@ namespace hidayah_collage.Repository
         private readonly IRefreshToken _refreshToken;
         private readonly RefreshTokenValidator _refreshTokenValidator;
         private readonly SystemMasterRepository _systemMasterRepository;
+        private readonly ILoggerManager _loggerManager;
 
         public AccountRepository(UserManager<ApplicationUser> userManager
             ,SignInManager<ApplicationUser> signInManager
@@ -37,6 +38,7 @@ namespace hidayah_collage.Repository
             ,IRefreshToken refreshToken
             ,RefreshTokenValidator refreshTokenValidator
             ,SystemMasterRepository systemMasterRepository
+            ,ILoggerManager loggerManager
             )
         {
             _userManager = userManager;
@@ -49,6 +51,7 @@ namespace hidayah_collage.Repository
             _refreshToken = refreshToken;
             _refreshTokenValidator = refreshTokenValidator;
             _systemMasterRepository = systemMasterRepository;
+            _loggerManager = loggerManager;
         }
 
         public async Task<WebResponse> Login(LoginRequest loginRequest)
@@ -57,6 +60,7 @@ namespace hidayah_collage.Repository
             var response = new LoginResponse();
             ApplicationUser applicationUser = new ApplicationUser();
             //var email = new EmailAddressAttribute();
+            _loggerManager.LogInfo("Start Login");
             try
             {
                 var userName = loginRequest.Email;
@@ -170,6 +174,7 @@ namespace hidayah_collage.Repository
                     webResponse.data = response;
                 }
                 */
+                _loggerManager.LogInfo("End Login");
             }
             catch (Exception ex)
             {
