@@ -84,6 +84,7 @@ namespace hidayah_collage.Repository
                         webResponse.message = _getMessageRepository.GetMeessageText("ERR002");
                         webResponse.data = null;
                         return webResponse;
+                        //throw new Exception(_getMessageRepository.GetMeessageText("ERR002"));
                     }
                 }
 

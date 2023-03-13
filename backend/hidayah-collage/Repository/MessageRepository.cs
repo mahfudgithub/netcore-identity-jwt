@@ -75,7 +75,7 @@ namespace hidayah_collage.Repository
         private async Task<Message> FindByCode(string Code)
         {
             //return  _appDbContext.Message.Where(x => x.MSG_CD == Code).FirstOrDefault();
-            return await _appDbContext.Message.FirstOrDefaultAsync(x => x.MSG_CD == Code);
+            return await _appDbContext.Message.AsNoTracking().FirstOrDefaultAsync(x => x.MSG_CD == Code);
         }
 
         public async Task<WebResponse> CreateMessageAsync(CreateMessageRequest messageRequest)
@@ -118,7 +118,7 @@ namespace hidayah_collage.Repository
                 var rowEnd = 5;
                 rowStart = (pagingRequest.Page - 1) * pagingRequest.Size + 1;
                 rowEnd = rowStart + pagingRequest.Size - 1;
-                var resultCount = _appDbContext.Message.Count();
+                var resultCount = _appDbContext.Message.AsNoTracking().Count();
                 //Sql Raw
                 //var result = await _appDbContext.messageListNotMappeds.FromSqlRaw("select * from (SELECT ROW_NUMBER() over(order by [MSG_CD] asc ) [SEQ],[MSG_CD],[MSG_TEXT] FROM [dbo].[Message])tb where 1 = 1 and tb.SEQ between {0} and {1}", rowStart, rowEnd).ToListAsync();
                 //SP

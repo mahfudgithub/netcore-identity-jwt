@@ -70,9 +70,9 @@ namespace hidayah_collage.Controllers
                         return Ok(result);
                     }
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
-                    return StatusCode(500);
+                    return StatusCode(417, ex.Message);
                 }
             }
 

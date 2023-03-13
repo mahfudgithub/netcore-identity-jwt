@@ -26,11 +26,11 @@ namespace hidayah_collage.Repository
             //{
             //    MSG_CD = code
             //};
-            var data = _appDbContext.Message.FirstOrDefault(x => x.MSG_CD == code);
+            var data = _appDbContext.Message.AsNoTracking().FirstOrDefault(x => x.MSG_CD == code);
             if (data == null)
                 return "Message Code Not Found";
 
-            return _appDbContext.Message.Where(x => x.MSG_CD == code).FirstOrDefault().MSG_TEXT;
+            return _appDbContext.Message.Where(x => x.MSG_CD == code).AsNoTracking().FirstOrDefault().MSG_TEXT;
         }
     }
 }

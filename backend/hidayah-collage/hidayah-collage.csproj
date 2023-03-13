@@ -48,6 +48,8 @@
     <Compile Remove="Migrations\20230223043941_updatemessagelist.Designer.cs" />
     <Compile Remove="Migrations\20230309023635_systemMasterTest.cs" />
     <Compile Remove="Migrations\20230309023635_systemMasterTest.Designer.cs" />
+    <Compile Remove="Migrations\20230310083420_blasbdhd.cs" />
+    <Compile Remove="Migrations\20230310083420_blasbdhd.Designer.cs" />
     <Compile Remove="Models\Paging\PagedResult.cs" />
     <Compile Remove="Models\Paging\PagedResultBase.cs" />
   </ItemGroup>

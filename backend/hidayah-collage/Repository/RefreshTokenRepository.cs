@@ -26,7 +26,7 @@ namespace hidayah_collage.Repository
 
         public async Task<RefreshToken> GetByToken(string token)
         {
-            return await _appDbContext.RefreshTokens.FirstOrDefaultAsync(t => t.Token == token);
+            return await _appDbContext.RefreshTokens.AsNoTracking().FirstOrDefaultAsync(t => t.Token == token);
         }
         public async Task Delete(Guid id)
         {
@@ -42,6 +42,7 @@ namespace hidayah_collage.Repository
         {
             IEnumerable<RefreshToken> refreshTokens = await _appDbContext.RefreshTokens
                 .Where(t => t.UserId == userId)
+                .AsNoTracking()
                 .ToListAsync();
 
             _appDbContext.RefreshTokens.RemoveRange(refreshTokens);
