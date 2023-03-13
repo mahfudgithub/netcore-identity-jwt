@@ -113,7 +113,8 @@ export default {
           })
           .catch((error) => {
             if (error.response) {
-              console.log(error.response.data.title);
+              //console.log(error.response.data.title);
+              this.toast.error(error.response.data.message);
             }
           })
           .finally(() => {

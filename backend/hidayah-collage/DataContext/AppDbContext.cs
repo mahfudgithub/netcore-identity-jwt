@@ -3,6 +3,7 @@ using hidayah_collage.Models.MessageResponse;
 using hidayah_collage.Models.SystemMaster;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using System;
 
 namespace hidayah_collage.DataContext
 {
@@ -37,18 +38,21 @@ namespace hidayah_collage.DataContext
             base.OnModelCreating(modelBuilder);
             
         }
-        //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        //{
-        //    optionsBuilder.UseSqlServer(GetDefaultConnectionString());
-        //    if (optionsBuilder.IsConfigured)
-        //    {
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            optionsBuilder.UseSqlServer(GetDefaultConnectionString(), builder =>
+            {
+                builder.EnableRetryOnFailure(5, TimeSpan.FromSeconds(3), null);
+            });
+            base.OnConfiguring(optionsBuilder);
+            //if (optionsBuilder.IsConfigured)
+            //{
 
-        //    }
-        //}
-
-        //public static string GetDefaultConnectionString()
-        //{
-        //    return Startup.ConnectionString;
-        //}
+            //}
+        }
+        public static string GetDefaultConnectionString()
+        {
+            return Startup.ConnectionString;
+        }
     }
 }

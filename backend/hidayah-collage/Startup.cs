@@ -2,6 +2,7 @@ using hidayah_collage.DataContext;
 using hidayah_collage.Interface;
 using hidayah_collage.Models;
 using hidayah_collage.Models.Email;
+using hidayah_collage.Models.Exceptions;
 using hidayah_collage.Models.JWT;
 using hidayah_collage.Models.TokenGenerator;
 using hidayah_collage.Models.TokenValidator;
@@ -98,7 +99,11 @@ namespace hidayah_collage
                     //    }
                     //};
                 });
-
+            /*
+                AddTransient: A new instance of the service is created each time it's requested
+                AddScoped: A new instance of the service is created for each HTTP request
+                AddSingleton: A single instance of the service is created for the lifetime of the application
+            */
             services.Configure<EmailConfig>(Configuration.GetSection("EmailConfiguration"));
             services.AddScoped<IAccount, AccountRepository>();
             services.AddScoped<GetMessageRepository>();
@@ -148,6 +153,8 @@ namespace hidayah_collage
                 app.UseDeveloperExceptionPage();
             }
 
+            //app.UseMiddleware<GlobalExceptionErrorHandling>();
+
             app.UseHttpsRedirection();
 
             app.UseStaticFiles();
@@ -173,6 +180,9 @@ namespace hidayah_collage
             app.UseAuthorization();
 
             app.UseCors(_policyName);
+
+            //app.ConfigureExceptionHandler(logger);
+            app.ConfigureExceptionHandler();
 
             app.UseEndpoints(endpoints =>
             {

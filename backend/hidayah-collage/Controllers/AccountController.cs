@@ -1,5 +1,6 @@
 ﻿using hidayah_collage.Interface;
 using hidayah_collage.Models;
+using hidayah_collage.Models.Exceptions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -30,8 +31,8 @@ namespace hidayah_collage.Controllers
         {
             if (ModelState.IsValid)
             {
-                try
-                {
+                //try
+                //{
                     var result = await _account.Register(registerRequest);
                     if (result.status)
                     {
@@ -41,11 +42,11 @@ namespace hidayah_collage.Controllers
                     {
                         return Ok(result);
                     }
-                }
-                catch (Exception ex)
-                {
-                    return StatusCode(500, ex.Message);
-                }
+                //}
+                //catch (Exception ex)
+                //{
+                //    return StatusCode(500, ex.Message);
+                //}
             }
 
             return BadRequest("Some Properties are not valid ");
@@ -56,8 +57,8 @@ namespace hidayah_collage.Controllers
         {
             if (ModelState.IsValid)
             {
-                try
-                {
+                //try
+                //{
                     var result = await _account.Login(loginRequest);                    
                     if (result.status)
                     {
@@ -69,11 +70,11 @@ namespace hidayah_collage.Controllers
                     {
                         return Ok(result);
                     }
-                }
-                catch (Exception ex)
-                {
-                    return StatusCode(417, ex.Message);
-                }
+                //}
+                //catch (Exception ex)
+                //{
+                //    return StatusCode(417, ex.Message);
+                //}
             }
 
             return BadRequest("Some Properties are not valid ");
@@ -88,8 +89,8 @@ namespace hidayah_collage.Controllers
 
             if (ModelState.IsValid)
             {
-                try
-                {
+                //try
+                //{
                     var result = await _account.ForgotPassword(forgotPasswordRequest);
                     if (result.status)
                     {
@@ -99,11 +100,11 @@ namespace hidayah_collage.Controllers
                     {
                         return Ok(result);
                     }
-                }
-                catch (Exception ex)
-                {
-                    return StatusCode(417, ex.Message);
-                }
+                //}
+                //catch (Exception ex)
+                //{
+                //    throw new BadRequestException($"something went wrong : {ex.Message}");
+                //}
             }
             return BadRequest("Some Properties are not valid ");
         }
@@ -113,8 +114,8 @@ namespace hidayah_collage.Controllers
         {
             if (ModelState.IsValid)
             {
-                try
-                {
+                //try
+                //{
                     var result = await _account.ResetPassword(resetPasswordRequest);
                     if (result.status)
                     {
@@ -124,11 +125,11 @@ namespace hidayah_collage.Controllers
                     {
                         return Ok(result);
                     }
-                }
-                catch (Exception)
-                {
-                    return StatusCode(500);
-                }
+                //}
+                //catch (Exception)
+                //{
+                //    return StatusCode(500);
+                //}
             }
             return BadRequest("Some Properties are not valid ");
         }
@@ -156,8 +157,8 @@ namespace hidayah_collage.Controllers
         {
             if (ModelState.IsValid)
             {
-                try
-                {
+                //try
+                //{
                     var result = await _account.RefreshToken(refreshTokenRequest);
                     if (result.status)
                     {
@@ -167,11 +168,11 @@ namespace hidayah_collage.Controllers
                     {
                         return Ok(result);
                     }
-                }
-                catch (Exception)
-                {
-                    return StatusCode(500);
-                }
+                //}
+                //catch (Exception)
+                //{
+                //    return StatusCode(500);
+                //}
             }
             return BadRequest("Some Properties are not valid ");
         }
@@ -211,8 +212,8 @@ namespace hidayah_collage.Controllers
         {
             if (ModelState.IsValid)
             {
-                try
-                {
+                //try
+                //{
                     var result = await _account.GetUserInfo(id);
                     if (result.status)
                     {
@@ -222,11 +223,11 @@ namespace hidayah_collage.Controllers
                     {
                         return Ok(result);
                     }
-                }
-                catch (Exception ex)
-                {
-                    return StatusCode(500, ex.Message);
-                }
+                //}
+                //catch (Exception ex)
+                //{
+                //    return StatusCode(500, ex.Message);
+                //}
             }
 
             return BadRequest("Some Properties are not valid ");
@@ -238,8 +239,8 @@ namespace hidayah_collage.Controllers
         {
             if (ModelState.IsValid)
             {
-                try
-                {
+                //try
+                //{
                     var result = await _account.SendConfirmedEmail(id);
                     if (result.status)
                     {
@@ -249,11 +250,11 @@ namespace hidayah_collage.Controllers
                     {
                         return Ok(result);
                     }
-                }
-                catch (Exception ex)
-                {
-                    return StatusCode(500, ex.Message);
-                }
+                //}
+                //catch (Exception ex)
+                //{
+                //    return StatusCode(500, ex.Message);
+                //}
             }
 
             return BadRequest("Some Properties are not valid ");

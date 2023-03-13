@@ -225,7 +225,8 @@ export default {
           .catch((error) => {
             if (error.response) {
               //console.log(error.response.data.errors);
-              this.toast.error(JSON.stringify(error.response.data.errors));
+              //this.toast.error(JSON.stringify(error.response.data.errors));
+              this.toast.error(error.response.data.message);
             } else if (error.request) {
               this.toast.error("Error: Network Error");
             } else {

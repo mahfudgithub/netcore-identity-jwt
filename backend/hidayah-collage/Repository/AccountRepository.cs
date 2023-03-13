@@ -1,6 +1,7 @@
 ﻿using hidayah_collage.Interface;
 using hidayah_collage.Models;
 using hidayah_collage.Models.Email;
+using hidayah_collage.Models.Exceptions;
 using hidayah_collage.Models.TokenGenerator;
 using hidayah_collage.Models.TokenValidator;
 using LoggerService;
@@ -61,33 +62,34 @@ namespace hidayah_collage.Repository
             ApplicationUser applicationUser = new ApplicationUser();
             //var email = new EmailAddressAttribute();
             _loggerManager.LogInfo("Start Login");
-            try
+            
+            var userName = loginRequest.Email;
+            if (userName.IndexOf('@') > -1)
             {
-                var userName = loginRequest.Email;
-                if (userName.IndexOf('@') > -1)
+                applicationUser = await ValidateEmail(loginRequest.Email);
+                if (applicationUser == null)
                 {
-                    applicationUser = await ValidateEmail(loginRequest.Email);
-                    if (applicationUser == null)
-                    {
-                        webResponse.status = false;
-                        webResponse.message = _getMessageRepository.GetMeessageText("ERR002");
-                        webResponse.data = null;
-                        return webResponse;
-                    }
+                    //webResponse.status = false;
+                    //webResponse.message = _getMessageRepository.GetMeessageText("ERR002");
+                    //webResponse.data = null;
+                    //return webResponse;
+                    throw new NotFoundException(_getMessageRepository.GetMeessageText("ERR002") + $" {loginRequest.Email}");
                 }
-                else
+            }
+            else
+            {
+                applicationUser = await ValidateUserName(loginRequest.Email);
+                if (applicationUser == null)
                 {
-                    applicationUser = await ValidateUserName(loginRequest.Email);
-                    if (applicationUser == null)
-                    {
-                        webResponse.status = false;
-                        webResponse.message = _getMessageRepository.GetMeessageText("ERR002");
-                        webResponse.data = null;
-                        return webResponse;
-                        //throw new Exception(_getMessageRepository.GetMeessageText("ERR002"));
-                    }
+                    //webResponse.status = false;
+                    //webResponse.message = _getMessageRepository.GetMeessageText("ERR002");
+                    //webResponse.data = null;
+                    //return webResponse;
+                    throw new NotFoundException(_getMessageRepository.GetMeessageText("ERR002")+ $" {loginRequest.Email}");
                 }
-
+            }
+            //try
+            //{
                 //if (email.IsValid(loginRequest.Email))
                 //{
                 //    applicationUser = await ValidateEmail(loginRequest.Email);
@@ -115,10 +117,11 @@ namespace hidayah_collage.Repository
 
                 if (!result.Succeeded)
                 {
-                    webResponse.status = false;
-                    webResponse.message = _getMessageRepository.GetMeessageText("ERR003");
-                    webResponse.data = null;
-                    return webResponse;
+                    //webResponse.status = false;
+                    //webResponse.message = _getMessageRepository.GetMeessageText("ERR003");
+                    //webResponse.data = null;
+                    //return webResponse;
+                    throw new InvalidException(_getMessageRepository.GetMeessageText("ERR003"));
                 }
 
                 var generateToken = _accessTokenGenerator.GenerateToken(applicationUser);
@@ -176,13 +179,13 @@ namespace hidayah_collage.Repository
                 }
                 */
                 _loggerManager.LogInfo("End Login");
-            }
-            catch (Exception ex)
-            {
-                webResponse.status = false;
-                webResponse.message = $"Exception occurred with a message: {ex.Message}";
-                webResponse.data = null;
-            }
+            //}
+            //catch (Exception ex)
+            //{
+            //    webResponse.status = false;
+            //    webResponse.message = $"Exception occurred with a message: {ex.Message}";
+            //    webResponse.data = null;
+            //}
             return webResponse;
         }
 
@@ -202,34 +205,36 @@ namespace hidayah_collage.Repository
 
             if(registerRequest.Password != registerRequest.ConfirmPassword)
             {
-                webResponse.status = false;
-                webResponse.message = _getMessageRepository.GetMeessageText("ERR004");
-                webResponse.data = null;
-                return webResponse;
+                //webResponse.status = false;
+                //webResponse.message = _getMessageRepository.GetMeessageText("ERR004");
+                //webResponse.data = null;
+                //return webResponse;
+                throw new NotFoundException(_getMessageRepository.GetMeessageText("ERR004"));
+            }
+            
+            var emailAccount = await ValidateEmail(registerRequest.Email);
+            if (emailAccount != null)
+            {
+                //var messageTxt = _getMessageRepository.GetMeessageText("ERR001");
+                //webResponse.status = false;
+                //webResponse.message = messageTxt;
+                //webResponse.data = null;
+                //return webResponse;
+                throw new NotFoundException(_getMessageRepository.GetMeessageText("ERR001"));
             }
 
-            try
+            var usernameAccount = await ValidateUserName(registerRequest.UserName);
+            if (usernameAccount != null)
             {
-                var emailAccount = await ValidateEmail(registerRequest.Email);
-                if (emailAccount != null)
-                {
-                    var messageTxt = _getMessageRepository.GetMeessageText("ERR001");
-                    webResponse.status = false;
-                    webResponse.message = messageTxt;
-                    webResponse.data = null;
-                    return webResponse;
-                }
-
-                var usernameAccount = await ValidateUserName(registerRequest.UserName);
-                if (usernameAccount != null)
-                {
-                    var messageTxt = _getMessageRepository.GetMeessageText("ERR001");
-                    webResponse.status = false;
-                    webResponse.message = messageTxt;
-                    webResponse.data = null;
-                    return webResponse;
-                }
-
+                //var messageTxt = _getMessageRepository.GetMeessageText("ERR001");
+                //webResponse.status = false;
+                //webResponse.message = messageTxt;
+                //webResponse.data = null;
+                //return webResponse;
+                throw new NotFoundException(_getMessageRepository.GetMeessageText("ERR001"));
+            }
+            //try
+            //{
                 var result = await _userManager.CreateAsync(user, registerRequest.Password);
 
                 if (result.Succeeded)
@@ -260,31 +265,49 @@ namespace hidayah_collage.Repository
                 }
                 else
                 {
-                    webResponse.status = false;
-                    webResponse.message = String.Join(", ", result.Errors.Select(x => x.Description));
-                    webResponse.data = null;
+                    //webResponse.status = false;
+                    //webResponse.message = String.Join(", ", result.Errors.Select(x => x.Description));
+                    //webResponse.data = null;
+                    throw new BadRequestException(String.Join(", ", result.Errors.Select(x => x.Description)));
                 }
-            }
-            catch(Exception ex)
-            {
-                webResponse.status = false;
-                webResponse.message = $"Exception occurred with a message: {ex.Message}";
-                webResponse.data = null;
-            }
+            //}
+            //catch(Exception ex)
+            //{
+            //    webResponse.status = false;
+            //    webResponse.message = $"Exception occurred with a message: {ex.Message}";
+            //    webResponse.data = null;
+            //}
 
             return webResponse;
         }
 
         public async Task<ApplicationUser> ValidateEmail(string email)
         {
-            var user = await _userManager.FindByEmailAsync(email);
+            var user = new ApplicationUser();
+            try
+            {
+                user = await _userManager.FindByEmailAsync(email);
+            }
+            catch (Exception ex)
+            {
+                throw new BadRequestException($"something went wrong : {ex.Message}");
+            }                        
 
             return user;
         }
 
         public async Task<ApplicationUser> ValidateUserName(string username)
         {
-            var user = await _userManager.FindByNameAsync(username);
+            var user = new ApplicationUser();
+            try
+            {
+                user = await _userManager.FindByNameAsync(username);
+            }
+            catch (Exception ex)
+            {
+                throw new BadRequestException($"something went wrong : {ex.Message}");
+            }
+            
 
             return user;
         }
@@ -295,26 +318,29 @@ namespace hidayah_collage.Repository
             var response = new ForgotPasswordResponse();
             EmailRequest emailRequest = new EmailRequest();
 
-            try
-            {
+            //try
+            //{
                 var user = await ValidateEmail(forgotPasswordRequest.Email);
                 if (user == null)
                 {
-                    webResponse.status = false;
-                    webResponse.message = _getMessageRepository.GetMeessageText("ERR002");
-                    webResponse.data = null;
-                    return webResponse;
+                    //webResponse.status = false;
+                    //_loggerManager.LogError($"Error : User not found");
+                    //webResponse.message = _getMessageRepository.GetMeessageText("ERR002");
+                    //webResponse.data = null;
+                    //return webResponse;
+                    throw new NotFoundException(_getMessageRepository.GetMeessageText("ERR002") + $" {forgotPasswordRequest.Email}");
                 }
-
             
                 var systemMaster = await _systemMasterRepository.GetListMasterByType("RESET_PWD");
                 if (systemMaster == null)
                 {
-                    webResponse.status = false;
-                    webResponse.message = "System Master Not Found";
-                    webResponse.data = null;
-                    return webResponse;
+                //webResponse.status = false;
+                //webResponse.message = "System Master Not Found";
+                //webResponse.data = null;
+                //return webResponse;
+                throw new NotFoundException("System Master Reset Password Not Found");
                 }
+            
                 var url = systemMaster.Where(x => x.Code == "URL").FirstOrDefault().Value_Txt;
                 var content = systemMaster.Where(x => x.Code == "BODY").FirstOrDefault().Value_Txt;
                 var link = systemMaster.Where(x => x.Code == "LINK").FirstOrDefault().Value_Txt;
@@ -322,10 +348,11 @@ namespace hidayah_collage.Repository
 
                 if (url == null || content == null || link == null || subject == null)
                 {
-                    webResponse.status = false;
-                    webResponse.message = "System Master Not Complete";
-                    webResponse.data = null;
-                    return webResponse;
+                    //webResponse.status = false;
+                    //webResponse.message = "System Master Not Complete";
+                    //webResponse.data = null;
+                    //return webResponse;
+                    throw new NotFoundException("System Master Not Complete");
                 }
 
                 var code = await _userManager.GeneratePasswordResetTokenAsync(user);
@@ -367,13 +394,14 @@ namespace hidayah_collage.Repository
                 webResponse.status = true;
                 webResponse.message = _getMessageRepository.GetMeessageText("SUC002");
                 webResponse.data = response;
-            }
-            catch (Exception ex)
-            {
-                webResponse.status = false;
-                webResponse.message = $"Exception occurred with a message: {ex.Message}";
-                webResponse.data = null;
-            }
+            //}
+            //catch (Exception ex)
+            //{
+                //webResponse.status = false;
+                //webResponse.message = $"Exception occurred with a message: {ex.Message}";
+                //_loggerManager.LogError($"Error : { ex.Message} , stackTrace : {ex.StackTrace}");
+                //webResponse.data = null;
+            //}
 
             return webResponse;
         }
@@ -390,11 +418,17 @@ namespace hidayah_collage.Repository
                 webResponse.data = null;
                 return webResponse;
             }
-
+            //try
+            //{
+            var user = new ApplicationUser();
             try
             {
-
-                var user = await _userManager.FindByEmailAsync(resetPasswordRequest.Email);
+                user = await _userManager.FindByEmailAsync(resetPasswordRequest.Email);
+            }
+            catch (Exception ex)
+            {
+                throw new BadRequestException($"something went wrong : {ex.Message}");
+            }                
 
                 if (user != null)
                 {
@@ -412,25 +446,28 @@ namespace hidayah_collage.Repository
                     }
                     else
                     {
-                        webResponse.status = false;
-                        webResponse.message = String.Join(", ", result.Errors.Select(x => x.Description));
-                        webResponse.data = null;
+                        //webResponse.status = false;
+                        //webResponse.message = String.Join(", ", result.Errors.Select(x => x.Description));
+                        //webResponse.data = null;
+                        throw new InvalidException(String.Join(", ", result.Errors.Select(x => x.Description)));
                     }
                 }
                 else
                 {
-                    var messageTxt = _getMessageRepository.GetMeessageText("ERR002");
-                    webResponse.status = false;
-                    webResponse.message = messageTxt;
-                    webResponse.data = null;
+                    //var messageTxt = _getMessageRepository.GetMeessageText("ERR002");
+                    //webResponse.status = false;
+                    //webResponse.message = messageTxt;
+                    //webResponse.data = null;
+                    throw new InvalidException(_getMessageRepository.GetMeessageText("ERR002"));
                 }
-            }
-            catch(Exception ex)
-            {
-                webResponse.status = false;
-                webResponse.message = $"Exception occurred with a message: {ex.Message}";
-                webResponse.data = null;
-            }
+            //}
+            //catch(Exception ex)
+            //{
+            //    webResponse.status = false;
+            //    webResponse.message = $"Exception occurred with a message: {ex.Message}";
+            //    _loggerManager.LogError($"Error : { ex.Message} , stackTrace : {ex.StackTrace}");
+            //    webResponse.data = null;
+            //}
 
             return webResponse;
 
@@ -440,9 +477,18 @@ namespace hidayah_collage.Repository
         {
             WebResponse webResponse = new WebResponse();
             //var response = new ResetPasswordResponse();
+            //try
+            //{
+            var user = new ApplicationUser();
             try
             {
-                var user = await _userManager.FindByIdAsync(userId);
+                user = await _userManager.FindByIdAsync(userId);
+            }
+            catch (Exception ex)
+            {
+                throw new BadRequestException($"something went wrong : {ex.Message}");
+            }
+                
 
                 if (user != null)
                 {
@@ -458,24 +504,26 @@ namespace hidayah_collage.Repository
                     }
                     else
                     {
-                        webResponse.status = false;
-                        webResponse.message = String.Join(", ", result.Errors.Select(x => x.Description));
-                        webResponse.data = null;
+                        //webResponse.status = false;
+                        //webResponse.message = String.Join(", ", result.Errors.Select(x => x.Description));
+                        //webResponse.data = null;
+                        throw new InvalidException(String.Join(", ", result.Errors.Select(x => x.Description)));
                     }
                 }
                 else
                 {
-                    webResponse.status = false;
-                    webResponse.message = _getMessageRepository.GetMeessageText("ERR002");
-                    webResponse.data = null;
+                    //webResponse.status = false;
+                    //webResponse.message = _getMessageRepository.GetMeessageText("ERR002");
+                    //webResponse.data = null;
+                    throw new InvalidException(_getMessageRepository.GetMeessageText("ERR002"));
                 }
-            }
-            catch(Exception ex)
-            {
-                webResponse.status = false;
-                webResponse.message = $"Exception occurred with a message: {ex.Message}";
-                webResponse.data = null;
-            }
+            //}
+            //catch(Exception ex)
+            //{
+            //    webResponse.status = false;
+            //    webResponse.message = $"Exception occurred with a message: {ex.Message}";
+            //    webResponse.data = null;
+            //}
 
             return webResponse;
         }
@@ -569,15 +617,25 @@ namespace hidayah_collage.Repository
         {
             WebResponse webResponse = new WebResponse();
 
+            //try
+            //{
+            var result = new ApplicationUser();
             try
             {
-                var result = await _userManager.FindByIdAsync(userId);
+                result = await _userManager.FindByIdAsync(userId);
+            }
+            catch (Exception ex)
+            {
+                throw new BadRequestException($"something went wrong : {ex.Message}");
+            }
+                
                 if (result == null)
                 {
-                    webResponse.status = false;
-                    webResponse.message = _getMessageRepository.GetMeessageText("ERR002");
-                    webResponse.data = null;
-                    return webResponse;
+                    //webResponse.status = false;
+                    //webResponse.message = _getMessageRepository.GetMeessageText("ERR002");
+                    //webResponse.data = null;
+                    //return webResponse;
+                    throw new InvalidException(_getMessageRepository.GetMeessageText("ERR002"));
                 }
                 var user = new ApplicationUser()
                 {
@@ -595,13 +653,13 @@ namespace hidayah_collage.Repository
                 webResponse.status = true;
                 webResponse.message = _getMessageRepository.GetMeessageText("SUC012");
                 webResponse.data = user;
-            }
-            catch(Exception ex)
-            {
-                webResponse.status = false;
-                webResponse.message = $"Exception occurred with a message: {ex.Message}";
-                webResponse.data = null;
-            }
+            //}
+            //catch(Exception ex)
+            //{
+            //    webResponse.status = false;
+            //    webResponse.message = $"Exception occurred with a message: {ex.Message}";
+            //    webResponse.data = null;
+            //}
 
             return webResponse;
         }
@@ -611,24 +669,35 @@ namespace hidayah_collage.Repository
             WebResponse webResponse = new WebResponse();
             EmailRequest emailRequest = new EmailRequest();
 
+            //try
+            //{
+            var user = new ApplicationUser();
             try
             {
-                var user = await _userManager.FindByIdAsync(userId);
+                user = await _userManager.FindByIdAsync(userId);
+            }
+            catch (Exception ex)
+            {
+                throw new BadRequestException($"something went wrong : {ex.Message}");
+            }
+                
                 if (user == null)
                 {
-                    webResponse.status = false;
-                    webResponse.message = _getMessageRepository.GetMeessageText("ERR002");
-                    webResponse.data = null;
-                    return webResponse;
+                    //webResponse.status = false;
+                    //webResponse.message = _getMessageRepository.GetMeessageText("ERR002");
+                    //webResponse.data = null;
+                    //return webResponse;
+                    throw new InvalidException(_getMessageRepository.GetMeessageText("ERR002"));
                 }
 
                 var systemMaster = await _systemMasterRepository.GetListMasterByType("EMAIL_CONFIRM");
                 if (systemMaster == null)
                 {
-                    webResponse.status = false;
-                    webResponse.message = "System Master Not Found";
-                    webResponse.data = null;
-                    return webResponse;
+                    //webResponse.status = false;
+                    //webResponse.message = "System Master Not Found";
+                    //webResponse.data = null;
+                    //return webResponse;
+                    throw new NotFoundException("System Master Confirm Email Not Found");
                 }
                 var newUrl = systemMaster.Where(x => x.Code == "URL").FirstOrDefault().Value_Txt;
                 var newContent = systemMaster.Where(x => x.Code == "BODY").FirstOrDefault().Value_Txt;
@@ -637,10 +706,11 @@ namespace hidayah_collage.Repository
 
                 if (newUrl == null || newContent == null || newLink == null || newSubject == null)
                 {
-                    webResponse.status = false;
-                    webResponse.message = "System Master Not Complete";
-                    webResponse.data = null;
-                    return webResponse;
+                    //webResponse.status = false;
+                    //webResponse.message = "System Master Not Complete";
+                    //webResponse.data = null;
+                    //return webResponse;
+                    throw new NotFoundException("System Master Confirm Email Not Complete");
                 }
 
                 var confirmEmailToken = await _userManager.GenerateEmailConfirmationTokenAsync(user);
@@ -674,13 +744,13 @@ namespace hidayah_collage.Repository
                 webResponse.status = true;
                 webResponse.message = _getMessageRepository.GetMeessageText("SUC013");
                 webResponse.data = body;
-            }
-            catch(Exception ex)
-            {
-                webResponse.status = false;
-                webResponse.message = $"Exception occurred with a message: {ex.Message}";
-                webResponse.data = null;
-            }
+            //}
+            //catch(Exception ex)
+            //{
+            //    webResponse.status = false;
+            //    webResponse.message = $"Exception occurred with a message: {ex.Message}";
+            //    webResponse.data = null;
+            //}
 
             return webResponse;
         }
