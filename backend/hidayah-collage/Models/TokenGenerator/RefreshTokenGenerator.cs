@@ -10,13 +10,11 @@ namespace hidayah_collage.Models.TokenGenerator
 {
     public class RefreshTokenGenerator
     {
-        private readonly IConfiguration _configuration;
         private readonly TokenGenerator _tokenGenerator;
         private readonly JwtConfig _jwtConfig;
 
-        public RefreshTokenGenerator(IConfiguration configuration, TokenGenerator tokenGenerator, JwtConfig jwtConfig)
+        public RefreshTokenGenerator(TokenGenerator tokenGenerator, JwtConfig jwtConfig)
         {
-            _configuration = configuration;
             _tokenGenerator = tokenGenerator;
             _jwtConfig = jwtConfig;
         }

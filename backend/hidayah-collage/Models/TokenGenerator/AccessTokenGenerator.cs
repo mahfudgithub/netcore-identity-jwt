@@ -1,23 +1,17 @@
 ﻿using hidayah_collage.Models.JWT;
-using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
 using System.Security.Claims;
-using System.Threading.Tasks;
 
 namespace hidayah_collage.Models.TokenGenerator
 {
     public class AccessTokenGenerator
     {
-        private readonly IConfiguration _configuration;
         private readonly TokenGenerator _tokenGenerator;
         private readonly JwtConfig _jwtConfig;
 
-        public AccessTokenGenerator(IConfiguration configuration , TokenGenerator tokenGenerator, JwtConfig jwtConfig)
+        public AccessTokenGenerator(TokenGenerator tokenGenerator, JwtConfig jwtConfig)
         {
-            _configuration = configuration;
             _tokenGenerator = tokenGenerator;
             _jwtConfig = jwtConfig;
         }
