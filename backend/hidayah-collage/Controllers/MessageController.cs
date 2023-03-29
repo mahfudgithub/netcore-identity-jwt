@@ -76,6 +76,7 @@ namespace hidayah_collage.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "SuperAdmin")]
         public async Task<IActionResult> GetListMessage([FromQuery]int size =5 ,int page=1)
         {
             if (ModelState.IsValid)

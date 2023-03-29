@@ -4,6 +4,7 @@ using hidayah_collage.Models;
 using hidayah_collage.Models.Email;
 using hidayah_collage.Models.Exceptions;
 using hidayah_collage.Models.JWT;
+using hidayah_collage.Models.Roles;
 using hidayah_collage.Models.TokenGenerator;
 using hidayah_collage.Models.TokenValidator;
 using hidayah_collage.Repository;
@@ -64,7 +65,6 @@ namespace hidayah_collage
 
             services.AddSingleton(jwtConfig);
 
-            services.AddAuthorization();
             services.AddAuthentication(option =>
             {
                 option.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -183,6 +183,8 @@ namespace hidayah_collage
 
             //app.ConfigureExceptionHandler(logger);
             app.ConfigureExceptionHandler();
+
+            RolesData.SeedRoles(app.ApplicationServices).Wait();
 
             app.UseEndpoints(endpoints =>
             {

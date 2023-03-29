@@ -21,14 +21,19 @@ namespace hidayah_collage.Models.TokenGenerator
             _tokenGenerator = tokenGenerator;
             _jwtConfig = jwtConfig;
         }
-        public LoginResponse GenerateToken(ApplicationUser user)
+        public LoginResponse GenerateToken(ApplicationUser user, Claim[] roles)
         {
             List<Claim> claims = new List<Claim>()
             {
                 new Claim("id", user.Id.ToString()),
                 new Claim("email", user.Email),
                 new Claim("name", user.FirstName +" "+ user.LastName),
+                new Claim(ClaimTypes.NameIdentifier, user.UserName),
             };
+            foreach(Claim claim in roles)
+            {
+                claims.Add(claim);
+            }            
 
             //DateTime expirationTime = DateTime.Now.AddSeconds(double.Parse(_configuration["JWT:AccessTokenExpirationSeconds"], CultureInfo.InvariantCulture));
             DateTime expirationTime = DateTime.Now.AddSeconds(_jwtConfig.AccessTokenExpirationSeconds);

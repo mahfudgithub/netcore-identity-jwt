@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Linq;
+using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -113,37 +114,41 @@ namespace hidayah_collage.Repository
                 //    }
                 //}
 
-                var result = await _signInManager.PasswordSignInAsync(applicationUser.UserName, loginRequest.Password, false, false);
+            var result = await _signInManager.PasswordSignInAsync(applicationUser.UserName, loginRequest.Password, false, false);
 
-                if (!result.Succeeded)
-                {
-                    //webResponse.status = false;
-                    //webResponse.message = _getMessageRepository.GetMeessageText("ERR003");
-                    //webResponse.data = null;
-                    //return webResponse;
-                    throw new InvalidException(_getMessageRepository.GetMeessageText("ERR003"));
-                }
+            if (!result.Succeeded)
+            {
+                //webResponse.status = false;
+                //webResponse.message = _getMessageRepository.GetMeessageText("ERR003");
+                //webResponse.data = null;
+                //return webResponse;
+                throw new InvalidException(_getMessageRepository.GetMeessageText("ERR003"));
+            }
+            //string[] roles = (await _userManager.GetRolesAsync(applicationUser)).ToArray();
+            var roles = await _userManager.GetRolesAsync(applicationUser);
+            var userRoles = roles.Select(r => new Claim(ClaimTypes.Role, r)).ToArray();
+            //var userClaims = await _userManager.GetClaimsAsync(applicationUser).ConfigureAwait(false);
 
-                var generateToken = _accessTokenGenerator.GenerateToken(applicationUser);
-                var refreshToken = _refreshTokenGenerator.GenerateToken();
+            var generateToken = _accessTokenGenerator.GenerateToken(applicationUser, userRoles);
+            var refreshToken = _refreshTokenGenerator.GenerateToken();
 
-                RefreshToken refreshTokenDTO = new RefreshToken()
-                {
-                    Token = refreshToken,
-                    UserId = applicationUser.Id
-                };
-                await _refreshToken.Create(refreshTokenDTO);
+            RefreshToken refreshTokenDTO = new RefreshToken()
+            {
+                Token = refreshToken,
+                UserId = applicationUser.Id
+            };
+            await _refreshToken.Create(refreshTokenDTO);
 
-                //response.FirstName = applicationUser.FirstName;
-                //response.LastName = applicationUser.LastName;
-                //response.Username = applicationUser.Email;
-                response.Token = generateToken.Token;
-                response.ExpireDate = generateToken.ExpireDate;
-                response.RefreshToken = refreshToken;
+            //response.FirstName = applicationUser.FirstName;
+            //response.LastName = applicationUser.LastName;
+            //response.Username = applicationUser.Email;
+            response.Token = generateToken.Token;
+            response.ExpireDate = generateToken.ExpireDate;
+            response.RefreshToken = refreshToken;
 
-                webResponse.status = true;
-                webResponse.message = _getMessageRepository.GetMeessageText("SUC003");
-                webResponse.data = response;
+            webResponse.status = true;
+            webResponse.message = _getMessageRepository.GetMeessageText("SUC003");
+            webResponse.data = response;
                 /*
                 var authClaims = new List<Claim>
                 {
@@ -178,7 +183,7 @@ namespace hidayah_collage.Repository
                     webResponse.data = response;
                 }
                 */
-                _loggerManager.LogInfo("End Login");
+             _loggerManager.LogInfo("End Login");
             //}
             //catch (Exception ex)
             //{
@@ -256,6 +261,11 @@ namespace hidayah_collage.Repository
                     //var mail = _mailService.SendEmailAsync(emailRequest);
                     //await _mailService.SendEmailSMTPAsync(emailRequest);
                     */
+                    //var defaultrole = _roleManager.FindByNameAsync("User").Result;
+                    //if (defaultrole != null)
+                    //{
+                    //    IdentityResult roleresult = await _userManager.AddToRoleAsync(user, defaultrole.Name);
+                    //}
                     response.FirstName = registerRequest.FirstName;
                     response.Username = registerRequest.Email;
                     response.Email = registerRequest.Email;
@@ -564,8 +574,10 @@ namespace hidayah_collage.Repository
                     webResponse.data = null;
                     return webResponse;
                 }
-
-                var generateToken = _accessTokenGenerator.GenerateToken(user);
+                //string[] roles = (await _userManager.GetRolesAsync(user)).ToArray();
+                var roles = await _userManager.GetRolesAsync(user);
+                var userRoles = roles.Select(r => new Claim(ClaimTypes.Role, r)).ToArray();
+                var generateToken = _accessTokenGenerator.GenerateToken(user, userRoles);
                 var refreshToken = _refreshTokenGenerator.GenerateToken();
 
                 refreshTokenDTO.Token = refreshToken;
