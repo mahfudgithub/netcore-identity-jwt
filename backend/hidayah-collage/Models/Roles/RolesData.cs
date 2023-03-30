@@ -22,6 +22,7 @@ namespace hidayah_collage.Models.Roles
             {
                 var dbContext = serviceScope.ServiceProvider.GetService<AppDbContext>();
                 var userManager = serviceScope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
+                var roleManager = serviceScope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
                 var configuration = serviceScope.ServiceProvider.GetService<IConfiguration>();
                 
                 var Role = (await dbContext.System.AsNoTracking().Where(x => x.Type == "DEFAULT_ROLES").FirstOrDefaultAsync()).Value_Txt;
@@ -30,10 +31,7 @@ namespace hidayah_collage.Models.Roles
                 //if (dbContext.Database.GetPendingMigrations().Any())
                 if (!dbContext.UserRoles.Any())
                 {
-                    //await dbContext.Database.MigrateAsync();
-                    
-                    var roleManager = serviceScope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
-                    
+                    //await dbContext.Database.MigrateAsync();                    
                     /*
                     foreach (var role in configuration.GetSection("Roles").Get<List<string>>())
                     {
@@ -68,7 +66,8 @@ namespace hidayah_collage.Models.Roles
                     var createSuperUser = await userManager.CreateAsync(SuperUser, password);
                     if (createSuperUser.Succeeded)
                     {
-                        await userManager.AddToRoleAsync(SuperUser, "SuperAdmin");
+                        if (await roleManager.RoleExistsAsync("SuperAdmin"))
+                            await userManager.AddToRoleAsync(SuperUser, "SuperAdmin");
                     }
                 }
             }
