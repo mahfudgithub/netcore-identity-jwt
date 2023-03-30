@@ -14,6 +14,7 @@ namespace hidayah_collage.Controllers
     [Route("api/[controller]")]
     [ApiController]
     [Authorize]
+    [ApiVersion("1.0")]
     public class MessageController : ControllerBase
     {
         private readonly IMessage _message;
