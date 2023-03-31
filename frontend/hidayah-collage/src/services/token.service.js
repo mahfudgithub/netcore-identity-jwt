@@ -35,6 +35,10 @@ class TokenService {
     return cookies.get("user").token;
   }
 
+  getUserRoles() {
+    return cookies.get("user").roles;
+  }
+
   // setUser(user) {
   //   console.log(JSON.stringify(user));
   //   localStorage.setItem("user", JSON.stringify(user));

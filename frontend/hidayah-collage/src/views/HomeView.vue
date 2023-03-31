@@ -50,6 +50,7 @@ export default {
     const token = TokenService.getTokenAccess();
     const name = TokenService.getNameDecode(token);
     const email = TokenService.getEmailDecode(token);
+    const roles = TokenService.getUserRoles();
     //const exp = TokenService.getExpDecode(token);
     //const expToken = new Date(TokenService.getExpireToken()).getTime() / 1000;
     //const currentDate = new Date().getTime() / 1000;
@@ -57,7 +58,7 @@ export default {
     this.name = name;
     //const loginUser = this.$route.params.data;
     // const token = sessionStorage.getItem("refreshToken");
-    // console.log("ini token " + token);
+    console.log("ini role " + roles);
     //this.refreshToken();
   },
   // mounted() {

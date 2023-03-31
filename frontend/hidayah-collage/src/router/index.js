@@ -13,6 +13,12 @@ const router = createRouter({
       name: "home",
       props: true,
       component: HomeView,
+      meta: {
+        superAdminAuth: true,
+        adminAuth: true,
+        userAuth: true,
+        guestAuth: true,
+      },
     },
     {
       path: "/account/login",
@@ -21,6 +27,12 @@ const router = createRouter({
       // this generates a separate chunk (About.[hash].js) for this route
       // which is lazy-loaded when the route is visited.
       component: () => import("../views/account/Login.vue"),
+      meta: {
+        superAdminAuth: true,
+        adminAuth: true,
+        userAuth: true,
+        guestAuth: true,
+      },
     },
     {
       path: "/account/register",
@@ -29,6 +41,12 @@ const router = createRouter({
       // this generates a separate chunk (About.[hash].js) for this route
       // which is lazy-loaded when the route is visited.
       component: () => import("../views/account/Register.vue"),
+      meta: {
+        superAdminAuth: true,
+        adminAuth: true,
+        userAuth: true,
+        guestAuth: true,
+      },
     },
     {
       path: "/account/forget",
@@ -37,6 +55,12 @@ const router = createRouter({
       // this generates a separate chunk (About.[hash].js) for this route
       // which is lazy-loaded when the route is visited.
       component: () => import("../views/account/ForgotPassword.vue"),
+      meta: {
+        superAdminAuth: true,
+        adminAuth: true,
+        userAuth: true,
+        guestAuth: true,
+      },
     },
     {
       path: "/account/resetpassword",
@@ -45,6 +69,12 @@ const router = createRouter({
       // this generates a separate chunk (About.[hash].js) for this route
       // which is lazy-loaded when the route is visited.
       component: () => import("../views/account/ResetPassword.vue"),
+      meta: {
+        superAdminAuth: true,
+        adminAuth: true,
+        userAuth: true,
+        guestAuth: true,
+      },
     },
     {
       path: "/message",
@@ -53,16 +83,39 @@ const router = createRouter({
       // this generates a separate chunk (About.[hash].js) for this route
       // which is lazy-loaded when the route is visited.
       component: () => import("../views/MessageMaster.vue"),
+      meta: {
+        superAdminAuth: true,
+        adminAuth: false,
+        userAuth: false,
+        guestAuth: false,
+      },
     },
     {
       path: "/profile",
       name: "profile",
       component: () => import("../views/account/MyProfile.vue"),
+      meta: {
+        superAdminAuth: true,
+        adminAuth: true,
+        userAuth: true,
+        guestAuth: true,
+      },
     },
     {
       path: "/confirmemail",
       name: "confirm",
       component: () => import("../views/account/ConfirmEmail.vue"),
+      meta: {
+        superAdminAuth: true,
+        adminAuth: true,
+        userAuth: true,
+        guestAuth: true,
+      },
+    },
+    {
+      path: "/unauthorized",
+      name: "Unauthorized",
+      component: () => import("../views/Unauthorized.vue"),
     },
   ],
   // routes: [
@@ -106,8 +159,36 @@ router.beforeEach((to, from, next) => {
   const publicPages = ["/account/login", "/account/register", "/account/forget", "/account/resetpassword"];
   const authRequired = !publicPages.includes(to.path);
   const currentUser = cookies.isKey("user");
-  if (authRequired && !currentUser) next({ name: "login" });
-  else next();
+  //const userRoles = cookies.get("user").roles;
+  // if (authRequired && !currentUser) next({ name: "login" });
+  // else next();
+  //console.log("s " + to.meta.superAdminAuth);
+  if (authRequired && !currentUser) {
+    next({ name: "login" });
+  } else {
+    if (currentUser) {
+      const userRoles = cookies.get("user").roles;
+      //console.log("role " + userRoles[0]);
+      if (to.meta.superAdminAuth) {
+        if (userRoles.includes("SuperAdmin")) {
+          //console.log("role super" + userRoles);
+          next();
+        } else if (to.meta.userAuth) {
+          if (userRoles.includes("User")) {
+            //console.log("role super" + userRoles);
+            next();
+          }
+        } else {
+          //console.log("role unaut" + userRoles);
+          return next({ name: "Unauthorized" });
+        }
+      } else {
+        next();
+      }
+    } else {
+      next();
+    }
+  }
 });
 
 export default router;

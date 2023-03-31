@@ -124,7 +124,10 @@ namespace hidayah_collage.Repository
                 //return webResponse;
                 throw new InvalidException(_getMessageRepository.GetMeessageText("ERR003"));
             }
+            //if (await _userManager.RoleExistsAsync("User"))
+               // await _userManager.AddToRoleAsync(applicationUser, "User");
             //string[] roles = (await _userManager.GetRolesAsync(applicationUser)).ToArray();
+            string[] rolesArray = (await _userManager.GetRolesAsync(applicationUser)).ToArray();
             var roles = await _userManager.GetRolesAsync(applicationUser);
             var userRoles = roles.Select(r => new Claim(ClaimTypes.Role, r)).ToArray();
             //var userClaims = await _userManager.GetClaimsAsync(applicationUser).ConfigureAwait(false);
@@ -145,6 +148,7 @@ namespace hidayah_collage.Repository
             response.Token = generateToken.Token;
             response.ExpireDate = generateToken.ExpireDate;
             response.RefreshToken = refreshToken;
+            response.Roles = rolesArray;
 
             webResponse.status = true;
             webResponse.message = _getMessageRepository.GetMeessageText("SUC003");
@@ -574,7 +578,7 @@ namespace hidayah_collage.Repository
                     webResponse.data = null;
                     return webResponse;
                 }
-                //string[] roles = (await _userManager.GetRolesAsync(user)).ToArray();
+                string[] rolesArray = (await _userManager.GetRolesAsync(user)).ToArray();
                 var roles = await _userManager.GetRolesAsync(user);
                 var userRoles = roles.Select(r => new Claim(ClaimTypes.Role, r)).ToArray();
                 var generateToken = _accessTokenGenerator.GenerateToken(user, userRoles);
@@ -591,6 +595,7 @@ namespace hidayah_collage.Repository
                 response.Token = generateToken.Token;
                 response.ExpireDate = generateToken.ExpireDate;
                 response.RefreshToken = refreshToken;
+                response.Roles = rolesArray;
 
                 webResponse.status = true;
                 webResponse.message = _getMessageRepository.GetMeessageText("SUC005");
