@@ -7,6 +7,7 @@ using hidayah_collage.Models.TokenValidator;
 using LoggerService;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.WebUtilities;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Linq;
@@ -768,6 +769,43 @@ namespace hidayah_collage.Repository
             //    webResponse.message = $"Exception occurred with a message: {ex.Message}";
             //    webResponse.data = null;
             //}
+
+            return webResponse;
+        }
+
+        public async Task<WebResponse> GetAllUser()
+        {
+            WebResponse webResponse = new WebResponse();
+            //List<UserResponse> userResponses = new List<UserResponse>();
+            var applicationUsers = await _userManager.Users.AsNoTracking().ToListAsync();
+
+            //foreach (var user in applicationUsers)
+            //{
+            //    //string[] rolesArray = (await _userManager.GetRolesAsync(user)).ToArray();
+            //    var userRole = await _userManager.GetRolesAsync(user);
+
+            //    if (userRole.Any())
+            //    {
+            //        foreach(var role in userRole)
+            //        {
+            //            userResponses.Add(new UserResponse()
+            //            {
+            //                Username = user.UserName,
+            //                FirstName = user.FirstName,
+            //                LastName = user.LastName,
+            //                Email = user.Email,
+            //                //Roles = (await _userManager.GetRolesAsync(user)).ToArray()
+            //                //Roles = role
+            //            });
+            //        }
+            //    }
+            //}
+            var userResponse = from user in applicationUsers
+                          select new { user.Id, user.UserName, user.FirstName, user.LastName, user.Email};
+
+            webResponse.status = true;
+            webResponse.message = _getMessageRepository.GetMeessageText("SUC003");
+            webResponse.data = userResponse;
 
             return webResponse;
         }

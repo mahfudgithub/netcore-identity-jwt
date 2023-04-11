@@ -108,6 +108,7 @@ namespace hidayah_collage
             */
             services.Configure<EmailConfig>(Configuration.GetSection("EmailConfiguration"));
             services.AddScoped<IAccount, AccountRepository>();
+            services.AddScoped<IRole, RoleRepository>();
             services.AddScoped<GetMessageRepository>();
             services.AddScoped<SystemMasterRepository>();
             services.AddScoped<AccessTokenGenerator>();

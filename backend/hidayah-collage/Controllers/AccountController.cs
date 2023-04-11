@@ -260,6 +260,33 @@ namespace hidayah_collage.Controllers
             return BadRequest("Some Properties are not valid ");
         }
 
+        [Authorize(Roles = "SuperAdmin")]
+        [HttpGet("user")]
+        public async Task<IActionResult> GetAllUser()
+        {
+            if (ModelState.IsValid)
+            {
+                //try
+                //{
+                var result = await _account.GetAllUser();
+                if (result.status)
+                {
+                    return Ok(result);
+                }
+                else
+                {
+                    return Ok(result);
+                }
+                //}
+                //catch (Exception ex)
+                //{
+                //    return StatusCode(500, ex.Message);
+                //}
+            }
+
+            return BadRequest("Some Properties are not valid ");
+        }
+
         public IActionResult BadRequestResult()
         {
             IEnumerable<string> errMsg = ModelState.Values.SelectMany(x => x.Errors.Select(e => e.ErrorMessage));

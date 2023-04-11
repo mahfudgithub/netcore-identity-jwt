@@ -14,5 +14,6 @@ namespace hidayah_collage.Interface
         Task<WebResponse> Logout(string rawUserId);
         Task<WebResponse> GetUserInfo(string userId);
         Task<WebResponse> SendConfirmedEmail(string userId);
+        Task<WebResponse> GetAllUser();
     }
 }
