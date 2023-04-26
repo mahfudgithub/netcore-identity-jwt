@@ -647,26 +647,26 @@ namespace hidayah_collage.Repository
                 throw new BadRequestException($"something went wrong : {ex.Message}");
             }
                 
-                if (result == null)
-                {
-                    //webResponse.status = false;
-                    //webResponse.message = _getMessageRepository.GetMeessageText("ERR002");
-                    //webResponse.data = null;
-                    //return webResponse;
-                    throw new InvalidException(_getMessageRepository.GetMeessageText("ERR002"));
-                }
-                var user = new ApplicationUser()
-                {
-                    FirstName = result.FirstName,
-                    LastName = result.LastName,
-                    Email = result.Email,
-                    UserName = result.UserName,
-                    Id = result.Id,
-                    EmailConfirmed = result.EmailConfirmed,
-                    PhoneNumber = result.PhoneNumber,
-                    ConcurrencyStamp = null,
-                    SecurityStamp = null
-                };
+            if (result == null)
+            {
+                //webResponse.status = false;
+                //webResponse.message = _getMessageRepository.GetMeessageText("ERR002");
+                //webResponse.data = null;
+                //return webResponse;
+                throw new InvalidException(_getMessageRepository.GetMeessageText("ERR002"));
+            }
+            var user = new ApplicationUser()
+            {
+                FirstName = result.FirstName,
+                LastName = result.LastName,
+                Email = result.Email,
+                UserName = result.UserName,
+                Id = result.Id,
+                EmailConfirmed = result.EmailConfirmed,
+                PhoneNumber = result.PhoneNumber,
+                ConcurrencyStamp = null,
+                SecurityStamp = null
+            };
 
                 webResponse.status = true;
                 webResponse.message = _getMessageRepository.GetMeessageText("SUC012");
@@ -800,8 +800,8 @@ namespace hidayah_collage.Repository
             //        }
             //    }
             //}
-            var userResponse = from user in applicationUsers
-                          select new { user.Id, user.UserName, user.FirstName, user.LastName, user.Email};
+            var userResponse = (from user in applicationUsers
+                          select new { user.Id, user.UserName, user.FirstName, user.LastName, user.Email}).OrderBy(x => x.UserName);
 
             webResponse.status = true;
             webResponse.message = _getMessageRepository.GetMeessageText("SUC003");
