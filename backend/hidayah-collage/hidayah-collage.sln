@@ -5,7 +5,11 @@ VisualStudioVersion = 16.0.33027.164
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "hidayah-collage", "hidayah-collage.csproj", "{5D473E12-C1B0-432A-BA04-AA843681226B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LoggerService", "..\LoggerService\LoggerService.csproj", "{14D87417-CBA3-4271-958A-9BD67F3AC9B0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LoggerService", "..\LoggerService\LoggerService.csproj", "{14D87417-CBA3-4271-958A-9BD67F3AC9B0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NunitTest", "..\NunitTest\NunitTest.csproj", "{5160B7E9-6B8B-4290-B14B-959EF04A874B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "xUnitTestCollage", "..\xUnitTestCollage\xUnitTestCollage.csproj", "{A0BC5D8F-4DDF-4FA3-A086-A5785A042FD4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +25,14 @@ Global
 		{14D87417-CBA3-4271-958A-9BD67F3AC9B0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{14D87417-CBA3-4271-958A-9BD67F3AC9B0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{14D87417-CBA3-4271-958A-9BD67F3AC9B0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5160B7E9-6B8B-4290-B14B-959EF04A874B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5160B7E9-6B8B-4290-B14B-959EF04A874B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5160B7E9-6B8B-4290-B14B-959EF04A874B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5160B7E9-6B8B-4290-B14B-959EF04A874B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A0BC5D8F-4DDF-4FA3-A086-A5785A042FD4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A0BC5D8F-4DDF-4FA3-A086-A5785A042FD4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A0BC5D8F-4DDF-4FA3-A086-A5785A042FD4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A0BC5D8F-4DDF-4FA3-A086-A5785A042FD4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
